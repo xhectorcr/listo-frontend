@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
-<<<<<<< HEAD
-=======
-
->>>>>>> hector
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -14,49 +10,20 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nombreController = TextEditingController();
-<<<<<<< HEAD
-  final TextEditingController _emailController = TextEditingController();
-=======
   final TextEditingController _correoController = TextEditingController();
->>>>>>> hector
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
+
   bool _isLoading = false;
-<<<<<<< HEAD
-  final AuthService _authService = AuthService();
-
-  void _registrar() async {
-    if (_nombreController.text.isEmpty ||
-        _emailController.text.isEmpty ||
-        _telefonoController.text.isEmpty ||
-        _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, completa todos los campos.')),
-      );
-      return;
-    }
-
-=======
   final AuthService _authService = AuthService(); // Instancia de tu servicio
 
   Future<void> _registrar() async {
->>>>>>> hector
     setState(() {
       _isLoading = true;
     });
 
-<<<<<<< HEAD
-    final response = await _authService.registrar(
-      _nombreController.text.trim(),
-      _emailController.text.trim(),
-      _telefonoController.text.trim(),
-      _passwordController.text.trim(),
-    );
-
-=======
     // Llamada al método que creamos en AuthService
-    
+
     final response = await _authService.registrarCliente(
       _nombreController.text.trim(),
       _correoController.text.trim(),
@@ -66,42 +33,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (!mounted) return;
 
->>>>>>> hector
     setState(() {
       _isLoading = false;
     });
 
     if (response['success']) {
-<<<<<<< HEAD
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('¡Registro exitoso! Puedes iniciar sesión ahora.')),
-        );
-        Navigator.pop(context); // Volver al login
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response['message'] ?? 'Error al registrarse')),
-        );
-      }
-    }
-=======
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['message']), backgroundColor: Colors.green),
+        SnackBar(
+          content: Text(response['message']),
+          backgroundColor: Colors.green,
+        ),
       );
-      Navigator.pop(context); 
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['message']), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text(response['message']),
+          backgroundColor: Colors.red,
+        ),
       );
     }
-    
-    
+
     await Future.delayed(const Duration(seconds: 2));
     setState(() => _isLoading = false);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Cliente registrado correctamente"), backgroundColor: Colors.green),
+      const SnackBar(
+        content: Text("Cliente registrado correctamente"),
+        backgroundColor: Colors.green,
+      ),
     );
     Navigator.pop(context);
   }
@@ -113,7 +72,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _telefonoController.dispose();
     _passwordController.dispose();
     super.dispose();
->>>>>>> hector
   }
 
   @override
@@ -123,92 +81,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFF5A1F),
         elevation: 0,
-<<<<<<< HEAD
-        title: const Text('Crear Cuenta', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              const Text('Únete a LISTO! GO', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFFFF5A1F))),
-              const SizedBox(height: 30),
-              
-              const Text('Nombre completo', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _nombreController,
-                decoration: InputDecoration(
-                  hintText: 'Ej. Juan Pérez',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              
-              const Text('Correo electrónico', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'tu@email.com',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              
-              const Text('Teléfono', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _telefonoController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  hintText: 'Ej. 987654321',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              
-              const Text('Contraseña', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: '••••••••',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade300)),
-                ),
-              ),
-              const SizedBox(height: 40),
-
-              // Botón Registrar
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00C8D6), // Cyan
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  onPressed: _isLoading ? null : _registrar,
-                  child: _isLoading 
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                    'Registrarme',
-                    style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
-=======
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -258,11 +130,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20),
 
                   _buildLabel('Correo electrónico'),
-                  _buildTextField(_correoController, 'tu@email.com', false, keyboardType: TextInputType.emailAddress),
+                  _buildTextField(
+                    _correoController,
+                    'tu@email.com',
+                    false,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
                   const SizedBox(height: 20),
 
                   _buildLabel('Teléfono'),
-                  _buildTextField(_telefonoController, '987654321', false, keyboardType: TextInputType.phone),
+                  _buildTextField(
+                    _telefonoController,
+                    '987654321',
+                    false,
+                    keyboardType: TextInputType.phone,
+                  ),
                   const SizedBox(height: 20),
 
                   _buildLabel('Contraseña'),
@@ -297,26 +179,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
           ],
->>>>>>> hector
         ),
       ),
     );
   }
-<<<<<<< HEAD
-}
-=======
 
   Widget _buildLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
+      child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, bool obscure, {TextInputType? keyboardType}) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String hint,
+    bool obscure, {
+    TextInputType? keyboardType,
+  }) {
     return TextField(
       controller: controller,
       obscureText: obscure,
@@ -339,4 +219,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
->>>>>>> hector
