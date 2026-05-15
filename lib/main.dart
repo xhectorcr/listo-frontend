@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart'; // Solo importa la parte móvil
+<<<<<<< HEAD
+=======
+import 'web/landing_page.dart';
+>>>>>>> hector
 
 void main() {
   runApp(const ClienteApp());

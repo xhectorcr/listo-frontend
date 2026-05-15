@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+<<<<<<< HEAD
 class CartScreen extends StatefulWidget {
   final int usuarioId;
   const CartScreen({super.key, this.usuarioId = 1}); // Por defecto 1 para pruebas
@@ -43,6 +44,10 @@ class _CartScreenState extends State<CartScreen> {
       });
     }
   }
+=======
+class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
+>>>>>>> hector
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +61,7 @@ class _CartScreenState extends State<CartScreen> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+<<<<<<< HEAD
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.black),
@@ -110,6 +116,35 @@ class _CartScreenState extends State<CartScreen> {
                     );
                   },
                 ),
+=======
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.shopping_cart_outlined,
+              size: 80,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Carrito Vacío',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40),
+              child: Text(
+                'Aún no hay productos procesados en tu compra actual.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+          ],
+        ),
+      ),
+>>>>>>> hector
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SizedBox(
@@ -117,16 +152,28 @@ class _CartScreenState extends State<CartScreen> {
           height: 55,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
+<<<<<<< HEAD
               backgroundColor: items.isEmpty ? Colors.grey.shade300 : Colors.blue,
+=======
+              backgroundColor:
+                  Colors.grey.shade300, // Color gris indicando botón inactivo
+>>>>>>> hector
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               elevation: 0,
             ),
+<<<<<<< HEAD
             onPressed: items.isEmpty ? null : () {},
             child: Text(
               items.isEmpty ? 'PAGAR' : 'PAGAR S/ ${total.toStringAsFixed(2)}',
               style: const TextStyle(
+=======
+            onPressed: () {}, // Vacío porque no hace nada si no hay items
+            child: const Text(
+              'PAGAR',
+              style: TextStyle(
+>>>>>>> hector
                 fontSize: 18,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -138,3 +185,24 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 }
+<<<<<<< HEAD
+=======
+
+Future<void> cargarCarrito() async {
+  // OJO: Si usas el emulador de Android de Android Studio, la IP local cambia a 10.0.2.2
+  // Si pruebas en Chrome Web o Windows, usa 127.0.0.1
+  final url = Uri.parse('http://127.0.0.1:8000/api/carrito');
+
+  try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final datos = json.decode(response.body);
+      print("Los productos son: ${datos['items']}");
+      print("El total es: S/ ${datos['total']}");
+      // Aquí usarías setState para actualizar la pantalla con los productos
+    }
+  } catch (e) {
+    print("Error conectando al servidor: $e");
+  }
+}
+>>>>>>> hector

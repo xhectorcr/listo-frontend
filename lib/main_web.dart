@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'web/landing_page.dart'; // El archivo con el catálogo y cómo funciona
+=======
+import 'package:listo_app/web/landing_page.dart';
+>>>>>>> hector
 
 void main() {
   runApp(const ListoWeb());

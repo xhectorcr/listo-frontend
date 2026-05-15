@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import 'home_screen.dart'; // Importamos el Home para la navegación
 import 'register_screen.dart';
 import '../web/admin_dashboard.dart'; // Importamos el dashboard del admin
+=======
+import 'home_screen.dart'; 
+import 'register_screen.dart';
+import '../services/auth_service.dart';
+import '../services/storage_service.dart';
+>>>>>>> hector
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+<<<<<<< HEAD
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -23,10 +31,25 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor, ingresa tu correo y contraseña.')),
+=======
+  final TextEditingController _correoController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  
+  bool _isLoading = false;
+  final AuthService _authService = AuthService();
+  final StorageService _storageService = StorageService(); // Servicio para guardar sesión
+
+  Future<void> _login() async {
+    // Validación básica de campos vacíos
+    if (_correoController.text.trim().isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, ingresa tu correo y contraseña'), backgroundColor: Colors.orange),
+>>>>>>> hector
       );
       return;
     }
 
+<<<<<<< HEAD
     setState(() {
       _isLoading = true;
     });
@@ -72,10 +95,69 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(content: Text(response['message'] ?? 'Error al iniciar sesión')),
         );
       }
+=======
+    setState(() => _isLoading = true);
+
+    // Consumo de tu API
+    final result = await _authService.login(
+      _correoController.text.trim(), 
+      _passwordController.text
+    );
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (result['success'] == true) {
+      // 🛡️ RESTRICCIÓN DE ROL: Solo permitimos el paso a Clientes
+      if (result['rol'] == 'Cliente') {
+        
+        // Guardamos TODA la sesión universalmente
+        await _storageService.saveAuthData(
+          result['token'],
+          result['usuario'], 
+          result['rol']      
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'] ?? '¡Bienvenido!'), backgroundColor: Colors.green),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
+        // Bloqueo a administradores, repartidores, etc.
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Acceso denegado: Esta aplicación es exclusiva para Clientes.'), 
+            backgroundColor: Colors.redAccent
+          ),
+        );
+      }
+    } else {
+      // Error de credenciales incorrectas desde el backend
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? 'Error al iniciar sesión'), 
+          backgroundColor: Colors.red
+        ),
+      );
+>>>>>>> hector
     }
   }
 
   @override
+<<<<<<< HEAD
+=======
+  void dispose() {
+    _correoController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+>>>>>>> hector
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -141,7 +223,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextField(
+<<<<<<< HEAD
                     controller: _emailController,
+=======
+                    controller: _correoController,
+>>>>>>> hector
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'tu@email.com',
@@ -178,7 +264,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 30),
 
+<<<<<<< HEAD
                   // Botón Iniciar Sesión
+=======
+                  // Botón Iniciar Sesión (Principal)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF5A1F), // Naranja LISTO!
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: _isLoading ? null : _login,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Iniciar Sesión',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 15),
+
+                  // Botón Crear Cuenta (Secundario)
+>>>>>>> hector
                   SizedBox(
                     width: double.infinity,
                     height: 55,
@@ -189,11 +306,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
+<<<<<<< HEAD
                       onPressed: _isLoading ? null : _login,
                       child: _isLoading 
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
                         'Iniciar Sesión',
+=======
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                        );
+                      },
+                      child: const Text(
+                        'Crear Cuenta',
+>>>>>>> hector
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -202,6 +330,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+<<<<<<< HEAD
                   const SizedBox(height: 20),
                   
                   // Botón de Registro
@@ -226,6 +355,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
+=======
+                  const SizedBox(height: 30),
+>>>>>>> hector
 
                   // Botones Sociales Mock
                   Center(
@@ -262,4 +394,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> hector

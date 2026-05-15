@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+final TextEditingController emailController = TextEditingController();
+>>>>>>> hector
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -362,8 +369,15 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 15),
+<<<<<<< HEAD
               const TextField(
                 decoration: InputDecoration(
+=======
+              // Añadimos el controller aquí
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+>>>>>>> hector
                   labelText: "Correo electrónico",
                   border: OutlineInputBorder(),
                 ),
@@ -384,8 +398,38 @@ class LandingPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF5A1F),
                   ),
+<<<<<<< HEAD
                   onPressed: () {
                     _showSuccessDialog(context);
+=======
+                  onPressed: () async {
+                    String emailCliente = emailController.text;
+
+                    // Validación simple para no enviar campos vacíos
+                    if (emailCliente.isEmpty) {
+                      print("Por favor, ingresa un correo");
+                      return;
+                    }
+
+                    try {
+                      // Importante: jsonEncode espera un objeto o un string directo
+                      final response = await http.post(
+                        Uri.parse(
+                          'http://localhost:5115/api/Descuento/enviar-cupon',
+                        ),
+                        headers: {"Content-Type": "application/json"},
+                        body: jsonEncode(emailCliente),
+                      );
+
+                      if (response.statusCode == 200) {
+                        _showSuccessDialog(context);
+                      } else {
+                        print("Error en el servidor: ${response.body}");
+                      }
+                    } catch (e) {
+                      print("No se pudo conectar con el backend: $e");
+                    }
+>>>>>>> hector
                   },
                   child: const Text(
                     "Registrarme",

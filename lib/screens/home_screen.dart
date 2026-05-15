@@ -3,6 +3,10 @@ import 'inicio_screen.dart';
 import 'wallet_screen.dart';
 import 'cart_screen.dart';
 import 'history_screen.dart';
+<<<<<<< HEAD
+=======
+import 'profile_screen.dart'; // 1. IMPORTAMOS LA NUEVA PANTALLA
+>>>>>>> hector
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -57,9 +61,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+<<<<<<< HEAD
           IconButton(
             icon: const Icon(Icons.person_outline, color: Colors.black),
             onPressed: () {},
+=======
+         IconButton(
+            icon: const Icon(Icons.person_outline, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+>>>>>>> hector
           ),
         ],
       ),

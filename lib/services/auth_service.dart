@@ -43,6 +43,7 @@ class AuthService {
     }
   }
 
+<<<<<<< HEAD
   Future<Map<String, dynamic>> registrar(String nombre, String correo, String telefono, String password) async {
     try {
       final response = await http.post(
@@ -53,11 +54,28 @@ class AuthService {
           'correo': correo, 
           'telefono': telefono,
           'password': password,
+=======
+
+  Future<Map<String, dynamic>> registrarCliente(String nombre, String correo, String password, String telefono) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/usuario/registrarCliente'), 
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'nombre': nombre,
+          'correo': correo,
+          'password': password,
+          'telefono': telefono,
+>>>>>>> hector
         }),
       );
 
       final data = jsonDecode(response.body);
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> hector
       if (response.statusCode == 200 && data['success'] == true) {
         return {
           'success': true,
@@ -66,11 +84,19 @@ class AuthService {
       } else {
         return {
           'success': false,
+<<<<<<< HEAD
           'message': data['message'] ?? 'Error desconocido al registrar usuario'
         };
       }
     } catch (e) {
       print('Error de conexión HTTP al registrar: $e');
+=======
+          'message': data['message'] ?? 'Error desconocido al intentar registrar el cliente'
+        };
+      }
+    } catch (e) {
+      print('Error de conexión HTTP en registrarCliente: $e');
+>>>>>>> hector
       return {
         'success': false,
         'message': 'Error de conexión. Verifica que el servidor esté encendido.'

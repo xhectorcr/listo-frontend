@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<<<<<<< HEAD
 
     <!-- Permisos necesarios para la cámara y el WebSocket de YOLO -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
+=======
+>>>>>>> hector
     <application
         android:label="listo_app"
         android:name="${applicationName}"

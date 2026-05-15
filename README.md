@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # LISTO! GO
 **Para qué sirve**
 - **Propósito:** Permite que un cliente ingrese a una tienda, tome productos y salga sin pasar por caja. El sistema utiliza modelos de detección como YOLO para identificar en tiempo real los productos que el cliente recoge o devuelve. Cada acción se asocia a un usuario específico (mediante identificación previa) y se refleja automáticamente en su carrito virtual. Al salir, el sistema calcula el total y realiza el cobro sin intervención manual.
@@ -56,3 +57,22 @@ flutter build apk --release
 - `lib/services/` — servicios como autenticación y almacenamiento.
 - `lib/src/` — adaptadores/implementaciones para permisos y plataformas.
 
+=======
+# listo_app
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
+>>>>>>> hector
