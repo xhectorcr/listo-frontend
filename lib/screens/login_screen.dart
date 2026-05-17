@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'home_screen.dart';
 import 'register_screen.dart';
 import '../web/admin_dashboard.dart';
@@ -16,80 +17,70 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _isLoading = false;
   final AuthService _authService = AuthService();
-  final StorageService _storageService =
-      StorageService(); // Servicio para guardar sesión
+  final StorageService _storageService = StorageService();
+
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+
+  final Color primaryColor = const Color(0xFFFF5A1F);
 
   Future<void> _login() async {
-    // Validación básica de campos vacíos
+    FocusScope.of(context).unfocus();
+
     if (_correoController.text.trim().isEmpty ||
         _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, ingresa tu correo y contraseña'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      _showSnackBar('Completa tu correo y contraseña', Colors.orange);
       return;
     }
 
     setState(() => _isLoading = true);
 
-    // Consumo de tu API
     final result = await _authService.login(
       _correoController.text.trim(),
       _passwordController.text,
     );
 
     if (!mounted) return;
+
     setState(() => _isLoading = false);
 
     if (result['success'] == true) {
-      // Guardamos la sesión y redirigimos según el rol recibido (Cliente o Admin).
       await _storageService.saveAuthData(
         result['token'],
         result['usuario'],
         result['rol'],
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result['message'] ?? '¡Bienvenido!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      // Redirección por rol (comparación flexible)
       final String roleStr = (result['rol'] ?? '').toString().toLowerCase();
 
-      if (roleStr.contains('cliente')) {
+      if (roleStr.contains('admin') || roleStr.contains('administrador')) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      } else if (roleStr.contains('admin') ||
-          roleStr.contains('administrador')) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminDashboard()),
+          MaterialPageRoute(builder: (_) => const AdminDashboard()),
         );
       } else {
-        // Por defecto, tratar como cliente
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
         );
       }
     } else {
-      // Error de credenciales incorrectas desde el backend
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result['message'] ?? 'Error al iniciar sesión'),
-          backgroundColor: Colors.red,
-        ),
+      _showSnackBar(
+        result['message'] ?? 'Credenciales incorrectas',
+        Colors.red,
       );
     }
+  }
+
+  void _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -101,199 +92,257 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool mobile = MediaQuery.of(context).size.width < 700;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Header Naranja
-            Container(
-              width: double.infinity,
-              height: 300,
-              decoration: const BoxDecoration(
-                color: Color(0xFFFF5A1F),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+      backgroundColor: const Color(0xFFF5F5F5),
+
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+
+          child: Container(
+            width: double.infinity,
+
+            constraints: const BoxConstraints(maxWidth: 430),
+
+            padding: EdgeInsets.all(mobile ? 28 : 36),
+
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 30,
+                  offset: const Offset(0, 10),
                 ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 50),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Text(
-                      'L!',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFF5A1F),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    '¡Hola!',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const Text(
-                    'Bienvenido a LISTO! GO',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ],
-              ),
+              ],
             ),
 
-            // Formulario
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Correo electrónico',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _correoController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      hintText: 'tu@email.com',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFFF5A1F)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFFF5A1F)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Contraseña',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: '••••••••',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
 
-                  // Botón Iniciar Sesión (Principal)
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(
-                          0xFFFF5A1F,
-                        ), // Naranja LISTO!
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+              children: [
+                // LOGO
+                Container(
+                  width: 75,
+                  height: 75,
+
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(22),
+                  ),
+
+                  child: const Center(
+                    child: Text(
+                      'L!',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
                       ),
-                      onPressed: _isLoading ? null : _login,
-                      child: _isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                              'Iniciar Sesión',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 28),
+
+                // TITLE
+                const Text(
+                  'Iniciar sesión',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF111111),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  'Ingresa para continuar',
+                  style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
+                ),
+
+                const SizedBox(height: 36),
+
+                // EMAIL
+                _input(
+                  controller: _correoController,
+                  hint: 'Correo electrónico',
+                  icon: Icons.email_outlined,
+                ),
+
+                const SizedBox(height: 18),
+
+                // PASSWORD
+                TextField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+
+                  decoration: InputDecoration(
+                    hintText: 'Contraseña',
+
+                    prefixIcon: const Icon(Icons.lock_outline_rounded),
+
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_rounded,
+                      ),
+                    ),
+
+                    filled: true,
+                    fillColor: const Color(0xFFF7F7F7),
+
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+
+                      borderSide: BorderSide.none,
+                    ),
+
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+
+                      borderSide: BorderSide(color: primaryColor, width: 2),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                Align(
+                  alignment: Alignment.centerRight,
+
+                  child: TextButton(
+                    onPressed: () {},
+
+                    child: Text(
+                      '¿Olvidaste tu contraseña?',
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // LOGIN BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  height: 58,
+
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _login,
+
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      elevation: 0,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
                             ),
-                    ),
+                          )
+                        : const Text(
+                            'Ingresar',
+
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
+                ),
 
-                  const SizedBox(height: 15),
+                const SizedBox(height: 28),
 
-                  // Botón Crear Cuenta (Secundario)
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00C8D6), // Cyan
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
+                // REGISTER
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+
+                  children: [
+                    Text(
+                      '¿No tienes cuenta?',
+                      style: TextStyle(color: Colors.grey.shade700),
+                    ),
+
+                    TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegisterScreen(),
+                            builder: (_) => const RegisterScreen(),
                           ),
                         );
                       },
-                      child: const Text(
-                        'Crear Cuenta',
+
+                      child: Text(
+                        'Crear cuenta',
                         style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Botones Sociales Mock
-                  Center(
-                    child: Text(
-                      'o continúa con',
-                      style: TextStyle(color: Colors.grey.shade600),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _socialBtn('Apple', Icons.apple),
-                      _socialBtn('Google', Icons.g_mobiledata),
-                    ],
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _socialBtn(String text, IconData icon) {
-    return OutlinedButton.icon(
-      onPressed: () {},
-      icon: Icon(icon, color: Colors.black),
-      label: Text(text, style: const TextStyle(color: Colors.black)),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  Widget _input({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+  }) {
+    return TextField(
+      controller: controller,
+
+      decoration: InputDecoration(
+        hintText: hint,
+
+        prefixIcon: Icon(icon),
+
+        filled: true,
+        fillColor: const Color(0xFFF7F7F7),
+
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide.none,
+        ),
+
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+
+          borderSide: BorderSide(color: primaryColor, width: 2),
+        ),
       ),
     );
   }

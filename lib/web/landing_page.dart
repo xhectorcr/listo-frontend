@@ -1,330 +1,560 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import '../screens/login_screen.dart';
-
-final TextEditingController emailController = TextEditingController();
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
+  static const Color primaryColor = Color(0xFFFF5A1F);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F9FA),
+      extendBodyBehindAppBar: true,
+
+      // =========================
+      // NAVBAR
+      // =========================
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        toolbarHeight: 85,
         elevation: 0,
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFF5A1F),
-                shape: BoxShape.circle,
-              ),
-              child: const Text(
-                'L!',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+        backgroundColor: Colors.white.withOpacity(0.75),
+        surfaceTintColor: Colors.transparent,
+        flexibleSpace: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.black.withOpacity(0.05)),
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            const Text(
-              'LISTO! GO',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+          ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              "Cómo funciona",
-              style: TextStyle(color: Colors.black87),
-            ),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Text(
+                  "L!",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 14),
+
+              const Text(
+                "LISTO! GO",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1,
+                ),
+              ),
+
+              const Spacer(),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  );
+                },
+                child: const Text(
+                  "Iniciar sesión",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              "Catálogo",
-              style: TextStyle(color: Colors.black87),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-            },
-            child: const Text("Login", style: TextStyle(color: Colors.black87)),
-          ),
-          // El botón "Crear Cuenta" fue eliminado por petición del usuario.
-        ],
+        ),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildHeroSection(),
-            _buildCatalogSection(),
-            _buildRegisterSection(context),
-            _buildFooter(),
+            _heroSection(context),
+            _howItWorksSection(),
+            _productsSection(),
+            _discountSection(context),
+            _statsSection(),
+            _mobileAppSection(context),
+            _footer(),
           ],
         ),
       ),
     );
   }
+  // =====================================================
+  // HERO SECTION RESPONSIVE
+  // =====================================================
 
-  // 1. SECCIÓN: HERO Y PASOS
-  Widget _buildHeroSection() {
+  Widget _heroSection(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+
+    final mobile = width < 950;
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      color: const Color(0xFFF8F9FA),
-      child: Column(
-        children: [
-          const Text(
-            "El futuro de las compras está aquí",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "Sin filas. Sin cajeros. Solo toma lo que necesitas y ¡Listo!",
-            style: TextStyle(fontSize: 20, color: Colors.grey),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 60),
-          // GRILLA DE PASOS
-          Wrap(
-            spacing: 40,
-            runSpacing: 40,
-            alignment: WrapAlignment.center,
+
+      // ALTURA MINIMA
+      constraints: BoxConstraints(minHeight: size.height),
+
+      padding: EdgeInsets.only(
+        top: mobile ? 110 : 120,
+        left: mobile ? 20 : 60,
+        right: mobile ? 20 : 60,
+        bottom: mobile ? 40 : 50,
+      ),
+
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFFFFF), Color(0xFFFFF4EF)],
+        ),
+      ),
+
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1450),
+
+          child: Flex(
+            direction: mobile ? Axis.vertical : Axis.horizontal,
+
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+
             children: [
-              _stepCard(
-                Icons.download,
-                "1. Descarga la App",
-                "Crea tu cuenta y asocia un método de pago.",
+              // =====================================================
+              // TEXTO
+              // =====================================================
+              Expanded(
+                flex: 5,
+
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+
+                  crossAxisAlignment: mobile
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
+
+                  children: [
+                    // BADGE
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 10,
+                      ),
+
+                      decoration: BoxDecoration(
+                        color: primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+
+                      child: const Text(
+                        "SMART SHOPPING EXPERIENCE",
+
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: mobile ? 20 : 28),
+
+                    // TITULO
+                    Text(
+                      "El futuro de las compras ya está aquí",
+
+                      textAlign: mobile ? TextAlign.center : TextAlign.left,
+
+                      style: TextStyle(
+                        fontSize: mobile ? 38 : 64,
+                        height: 1.05,
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFF111111),
+                      ),
+                    ),
+
+                    SizedBox(height: mobile ? 18 : 25),
+
+                    // DESCRIPCION
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 650),
+
+                      child: Text(
+                        "Compra sin filas, sin cajeros y sin esperas. "
+                        "Solo entra, toma tus productos y sal automáticamente.",
+
+                        textAlign: mobile ? TextAlign.center : TextAlign.left,
+
+                        style: TextStyle(
+                          fontSize: mobile ? 16 : 18,
+                          height: 1.7,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: mobile ? 28 : 38),
+
+                    // BOTON
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 34,
+                          vertical: 22,
+                        ),
+
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                        );
+                      },
+
+                      child: const Text(
+                        "Iniciar sesión",
+
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: mobile ? 30 : 45),
+
+                    // =====================================================
+                    // STATS
+                    // =====================================================
+                    Wrap(
+                      spacing: 20,
+                      runSpacing: 20,
+
+                      alignment: mobile
+                          ? WrapAlignment.center
+                          : WrapAlignment.start,
+
+                      children: [
+                        _heroStat("99.8%", "Precisión IA"),
+                        _heroStat("+10K", "Productos detectados"),
+                        _heroStat("24/7", "Automatización"),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              _stepCard(
-                Icons.qr_code_scanner,
-                "2. Escanea al Entrar",
-                "Usa el código QR de tu app en los torniquetes.",
-              ),
-              _stepCard(
-                Icons.shopping_bag,
-                "3. Toma lo que quieras",
-                "Nuestras cámaras detectan todo automáticamente.",
-              ),
-              _stepCard(
-                Icons.directions_walk,
-                "4. ¡Sal de la tienda!",
-                "El cobro se realiza directo a tu billetera virtual.",
+
+              SizedBox(width: mobile ? 0 : 60, height: mobile ? 40 : 0),
+
+              // =====================================================
+              // IMAGEN
+              // =====================================================
+              Expanded(
+                flex: 5,
+
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+
+                    children: [
+                      // FONDO DIFUMINADO
+                      Container(
+                        width: mobile ? 320 : 560,
+                        height: mobile ? 320 : 560,
+
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+
+                          gradient: RadialGradient(
+                            colors: [
+                              primaryColor.withOpacity(0.15),
+                              primaryColor.withOpacity(0.02),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // IMAGEN
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(35),
+
+                        child: Image.asset(
+                          "assets/image/landing-1.webp",
+
+                          width: mobile ? 330 : 620,
+                          height: mobile ? 330 : 500,
+
+                          fit: BoxFit.cover,
+
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: mobile ? 330 : 620,
+                              height: mobile ? 330 : 500,
+
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(35),
+                              ),
+
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+
+                                children: [
+                                  Icon(
+                                    Icons.broken_image_rounded,
+                                    size: 80,
+                                    color: Colors.grey.shade500,
+                                  ),
+
+                                  const SizedBox(height: 15),
+
+                                  Text(
+                                    "No se pudo cargar la imagen",
+
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 80),
-
-          // --- AQUÍ ESTÁ EL CARTEL NARANJA DE LAS GASEOSAS ---
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            constraints: const BoxConstraints(maxWidth: 950),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFF5A1F), // NARANJA
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFFF5A1F).withOpacity(0.3),
-                  blurRadius: 25,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Row(
-                children: [
-                  // Imagen de la oferta
-                  Expanded(
-                    flex: 4,
-                    child: SizedBox(
-                      height: 300,
-                      child: Image.asset(
-                        'assets/cocainca.jpg',
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.white24,
-                            child: const Icon(
-                              Icons.local_drink,
-                              size: 80,
-                              color: Colors.white,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  // Texto de la oferta
-                  Expanded(
-                    flex: 6,
-                    child: Padding(
-                      padding: const EdgeInsets.all(40.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "¡OFERTA IMPERDIBLE!",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            "2x1 en Gaseosas Coca-Cola e Inca Kola",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text(
-                            "Solo por tiempo limitado en nuestra sede Ica. ¡Toma dos y paga una al pasar por el sensor!",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                          const SizedBox(height: 25),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 30,
-                                vertical: 15,
-                              ),
-                            ),
-                            onPressed: () {},
-                            child: const Text("VER MÁS OFERTAS"),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _stepCard(IconData icon, String title, String desc) {
+  // =====================================================
+  // HERO STATS
+  // =====================================================
+
+  Widget _heroStat(String value, String label) {
     return Container(
-      width: 250,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            spreadRadius: 2,
+            blurRadius: 18,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
+
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+
         children: [
-          Icon(icon, size: 50, color: const Color(0xFFFF5A1F)),
-          const SizedBox(height: 15),
           Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+            value,
+
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF111111),
+            ),
           ),
-          const SizedBox(height: 10),
+
+          const SizedBox(height: 6),
+
           Text(
-            desc,
-            style: const TextStyle(color: Colors.grey),
+            label,
+
             textAlign: TextAlign.center,
+
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade700,
+            ),
           ),
         ],
       ),
     );
   }
 
-  // 2. SECCIÓN: CATÁLOGO
-  Widget _buildCatalogSection() {
+  // =====================================================
+  // HOW IT WORKS
+  // =====================================================
+
+  Widget _howItWorksSection() {
+    return _sectionWrapper(
+      title: "¿Cómo funciona?",
+      subtitle: "Comprar nunca fue tan simple.",
+      dark: true,
+      child: Wrap(
+        spacing: 25,
+        runSpacing: 25,
+        alignment: WrapAlignment.center,
+        children: [
+          _stepCard("1", "Escanea QR", Icons.qr_code_scanner),
+          _stepCard("2", "Entra a tienda", Icons.store),
+          _stepCard("3", "Toma productos", Icons.shopping_bag),
+          _stepCard("4", "Sal automáticamente", Icons.exit_to_app),
+        ],
+      ),
+    );
+  }
+
+  // =====================================================
+  // PRODUCTS
+  // =====================================================
+
+  Widget _productsSection() {
+    return _sectionWrapper(
+      title: "Productos destacados",
+      subtitle: "Encuentra tus productos favoritos al instante.",
+      child: Wrap(
+        spacing: 30,
+        runSpacing: 30,
+        alignment: WrapAlignment.center,
+        children: [
+          _productCard("Coca Cola", "S/ 3.50"),
+          _productCard("Inca Kola", "S/ 3.50"),
+          _productCard("Papas Lays", "S/ 2.50"),
+          _productCard("Oreo", "S/ 1.20"),
+          _productCard("Agua San Luis", "S/ 2.00"),
+          _productCard("Snickers", "S/ 3.00"),
+        ],
+      ),
+    );
+  }
+
+  // =====================================================
+  // DISCOUNTS
+  // =====================================================
+
+  Widget _discountSection(BuildContext context) {
+    return _sectionWrapper(
+      title: "Ofertas y descuentos",
+      subtitle: "Promociones automáticas impulsadas por IA.",
+      child: Wrap(
+        spacing: 30,
+        runSpacing: 30,
+        alignment: WrapAlignment.center,
+        children: [
+          _discountCard("2x1 en gaseosas", "Solo por hoy"),
+          _discountCard("Combo snacks", "Ahorra hasta 30%"),
+          _discountCard("Happy Hour", "Descuentos nocturnos"),
+        ],
+      ),
+    );
+  }
+
+  // =====================================================
+  // STATS
+  // =====================================================
+
+  Widget _statsSection() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      child: Column(
+      padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
+      child: Wrap(
+        spacing: 60,
+        runSpacing: 40,
+        alignment: WrapAlignment.center,
         children: [
-          const Text(
-            "Productos Estrella",
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 40),
-          Wrap(
-            spacing: 30,
-            runSpacing: 30,
-            alignment: WrapAlignment.center,
-            children: [
-              _productCard("Coca Cola 500ml", "S/ 3.50", Icons.local_drink),
-              _productCard("Galletas Oreo", "S/ 1.20", Icons.cookie),
-              _productCard("Papas Lays", "S/ 2.50", Icons.fastfood),
-              _productCard("Agua San Luis", "S/ 2.00", Icons.water_drop),
-            ],
-          ),
+          _bigStat("10K+", "Compras registradas"),
+          _bigStat("99.8%", "Precisión IA"),
+          _bigStat("-80%", "Tiempo en filas"),
+          _bigStat("24/7", "Monitoreo"),
         ],
       ),
     );
   }
 
-  Widget _productCard(String name, String price, IconData placeholderIcon) {
-    return Container(
-      width: 200,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
+  // =====================================================
+  // MOBILE APP
+  // =====================================================
+
+  Widget _mobileAppSection(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final mobile = width < 900;
+
+    return _sectionWrapper(
+      title: "Controla todo desde tu app",
+      subtitle: "Gestiona promociones, historial y accesos desde tu celular.",
+      child: Flex(
+        direction: mobile ? Axis.vertical : Axis.horizontal,
         children: [
-          Container(
-            height: 150,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(15),
-              ),
+          Expanded(
+            child: Image.asset(
+              "assets/cocainca.jpg",
+              height: 400,
+              fit: BoxFit.cover,
             ),
-            child: Icon(placeholderIcon, size: 60, color: Colors.grey.shade400),
           ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
+
+          const SizedBox(width: 40, height: 40),
+
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 5),
-                Text(
-                  price,
-                  style: const TextStyle(
-                    color: Color(0xFFFF5A1F),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+              children: const [
+                ListTile(
+                  leading: Icon(Icons.qr_code),
+                  title: Text("QR de acceso"),
+                ),
+                ListTile(
+                  leading: Icon(Icons.history),
+                  title: Text("Historial de compras"),
+                ),
+                ListTile(
+                  leading: Icon(Icons.discount),
+                  title: Text("Promociones exclusivas"),
+                ),
+                ListTile(
+                  leading: Icon(Icons.account_balance_wallet),
+                  title: Text("Billetera virtual"),
                 ),
               ],
             ),
@@ -334,167 +564,331 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  // 3. SECCIÓN: REGISTRO
-  Widget _buildRegisterSection(BuildContext context) {
+  // =====================================================
+  // FOOTER
+  // =====================================================
+
+  Widget _footer() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      color: const Color(0xFF2C2C2C),
-      child: Center(
-        child: Container(
-          width: 500,
-          padding: const EdgeInsets.all(40),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+      padding: const EdgeInsets.all(50),
+      color: Colors.black,
+      child: Column(
+        children: [
+          const Text(
+            "LISTO! GO",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 30,
+            ),
           ),
-          child: Column(
+
+          const SizedBox(height: 20),
+
+          Text(
+            "Compras inteligentes impulsadas por IA.",
+            style: TextStyle(color: Colors.grey.shade500),
+          ),
+
+          const SizedBox(height: 25),
+
+          Wrap(
+            spacing: 25,
             children: [
-              const Text(
-                "Crea tu cuenta antes de ir",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 30),
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: "Nombre completo",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 15),
-              // Añadimos el controller aquí
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: "Correo electrónico",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 15),
-              const TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Contraseña",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF5A1F),
-                  ),
-                  onPressed: () async {
-                    String emailCliente = emailController.text;
-
-                    // Validación simple para no enviar campos vacíos
-                    if (emailCliente.isEmpty) {
-                      print("Por favor, ingresa un correo");
-                      return;
-                    }
-
-                    try {
-                      // Importante: jsonEncode espera un objeto o un string directo
-                      final response = await http.post(
-                        Uri.parse(
-                          'http://localhost:5115/api/Descuento/enviar-cupon',
-                        ),
-                        headers: {"Content-Type": "application/json"},
-                        body: jsonEncode(emailCliente),
-                      );
-
-                      if (response.statusCode == 200) {
-                        _showSuccessDialog(context);
-                      } else {
-                        print("Error en el servidor: ${response.body}");
-                      }
-                    } catch (e) {
-                      print("No se pudo conectar con el backend: $e");
-                    }
-                  },
-                  child: const Text(
-                    "Registrarme",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                ),
-              ),
+              _footerItem("Soporte"),
+              _footerItem("Privacidad"),
+              _footerItem("Términos"),
+              _footerItem("Contacto"),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showSuccessDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Column(
-          children: [
-            Icon(
-              Icons.check_circle_outline,
-              color: Color(0xFFFF5A1F),
-              size: 60,
-            ),
-            SizedBox(height: 15),
-            Text(
-              "¡Registro Exitoso!",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        content: const Text(
-          "Bienvenido a la revolución de Listo! GO. Ya puedes empezar a comprar sin filas.",
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF5A1F),
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "¡ENTENDIDO!",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  // 4. SECCIÓN: FOOTER
-  Widget _buildFooter() {
+  // =====================================================
+  // COMPONENTS
+  // =====================================================
+
+  Widget _sectionWrapper({
+    required String title,
+    required String subtitle,
+    required Widget child,
+    bool dark = false,
+  }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(40),
-      color: Colors.black,
-      child: const Column(
+      padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
+      color: dark ? const Color(0xFF111111) : Colors.white,
+      child: Column(
         children: [
           Text(
-            "LISTO! GO © 2026",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: dark ? Colors.white : Colors.black,
+              fontSize: 42,
+              fontWeight: FontWeight.w800,
+            ),
           ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Soporte", style: TextStyle(color: Colors.white54)),
-              SizedBox(width: 20),
-              Text("Términos", style: TextStyle(color: Colors.white54)),
-              SizedBox(width: 20),
-              Text("Privacidad", style: TextStyle(color: Colors.white54)),
-            ],
+
+          const SizedBox(height: 20),
+
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: dark ? Colors.grey.shade400 : Colors.grey.shade700,
+              fontSize: 18,
+            ),
+          ),
+
+          const SizedBox(height: 60),
+
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _benefitCard(IconData icon, String title) {
+    return Container(
+      width: 240,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 25,
+            offset: const Offset(0, 15),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 45, color: primaryColor),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
           ),
         ],
       ),
     );
+  }
+
+  Widget _stepCard(String step, String title, IconData icon) {
+    return Container(
+      width: 240,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Column(
+        children: [
+          Text(
+            step,
+            style: TextStyle(
+              color: primaryColor,
+              fontSize: 30,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          Icon(icon, color: Colors.white, size: 42),
+
+          const SizedBox(height: 20),
+
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _productCard(String title, String price) {
+    return Container(
+      width: 220,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 25,
+            offset: const Offset(0, 15),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: Image.asset(
+              "assets/cocainca.jpg",
+              height: 160,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+          ),
+
+          const SizedBox(height: 10),
+
+          Text(
+            price,
+            style: const TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _discountCard(String title, String desc) {
+    return Container(
+      width: 320,
+      padding: const EdgeInsets.all(35),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFF5A1F), Color(0xFFFF7A1F)],
+        ),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.local_fire_department,
+            color: Colors.white,
+            size: 40,
+          ),
+
+          const SizedBox(height: 25),
+
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 28,
+            ),
+          ),
+
+          const SizedBox(height: 15),
+
+          Text(desc, style: const TextStyle(color: Colors.white, fontSize: 17)),
+        ],
+      ),
+    );
+  }
+
+  Widget _techChip(String title) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _bigStat(String value, String label) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            color: primaryColor,
+            fontSize: 52,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          label,
+          style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
+        ),
+      ],
+    );
+  }
+
+  Widget _locationCard(String city) {
+    return Container(
+      width: 260,
+      padding: const EdgeInsets.all(35),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.location_on, color: primaryColor, size: 42),
+
+          const SizedBox(height: 20),
+
+          Text(
+            city,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 22,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _statItem(String value, String label) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            color: primaryColor,
+            fontWeight: FontWeight.w800,
+            fontSize: 32,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(label, style: TextStyle(color: Colors.grey.shade700)),
+      ],
+    );
+  }
+
+  Widget _footerItem(String title) {
+    return Text(title, style: TextStyle(color: Colors.grey.shade400));
   }
 }
