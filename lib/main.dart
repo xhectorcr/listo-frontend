@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'screens/login_screen.dart'; // Solo importa la parte móvil
-import 'web/landing_page.dart';
-
-void main() {
-  runApp(const ClienteApp());
+import 'routes/app_router.dart';
+import 'core/constants/app_colors.dart';
+import 'core/injection/injection_container.dart' as di;
+import 'package:provider/provider.dart';
+import 'features/auth/presentation/providers/auth_provider.dart';
+import 'features/products/presentation/providers/product_provider.dart';
+import 'features/products/presentation/providers/category_provider.dart';
+import 'features/client/presentation/providers/cart_provider.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => di.sl<AuthProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<ProductProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<CategoryProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<CartProvider>()),
+      ],
+      child: const ClienteApp(),
+    ),
+  );
 }
 
 class ClienteApp extends StatelessWidget {
@@ -12,15 +28,14 @@ class ClienteApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'LISTO! GO',
       theme: ThemeData(
-        primaryColor: const Color(0xFFFF5A1F),
+        primaryColor: AppColors.primary,
         fontFamily: 'Roboto',
       ),
-      // Si estamos en web (p. ej. `flutter run -d edge`), mostrar la landing pública.
-      home: kIsWeb ? const LandingPage() : const LoginScreen(),
+      routerConfig: appRouter,
     );
   }
 }

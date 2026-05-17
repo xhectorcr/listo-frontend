@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:listo_app/web/landing_page.dart';
+import 'features/landing/presentation/pages/landing_page.dart';
 
 void main() {
   runApp(const ListoWeb());
