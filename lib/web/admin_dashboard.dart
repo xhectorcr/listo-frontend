@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../views/summary_view.dart';
 import '../views/inventory_view.dart';
 import '../views/live_monitor_view.dart';
-import 'admin_login_screen.dart'; 
+import 'admin_login_screen.dart';
+import 'landing_page.dart';
 import '../services/storage_service.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -36,7 +37,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Future<void> _loadProfileData() async {
     final name = await _storageService.getUserName();
     final role = await _storageService.getRole();
-    
+
     setState(() {
       _userName = name ?? 'Admin';
       _userRole = role ?? 'Sin Rol';
@@ -45,14 +46,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Future<void> _handleLogout() async {
     await _storageService.clearAuthData();
-    
+
     // Volvemos al login
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const AdminLoginScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const LandingPage()),
       );
     }
   }
@@ -71,14 +70,26 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   child: NavigationRail(
                     extended: _isExpanded,
                     backgroundColor: const Color(0xFF2C2C2C),
-                    unselectedIconTheme: const IconThemeData(color: Colors.white54),
-                    selectedIconTheme: const IconThemeData(color: Color(0xFFFF5A1F)),
-                    unselectedLabelTextStyle: const TextStyle(color: Colors.white54),
-                    selectedLabelTextStyle: const TextStyle(color: Color(0xFFFF5A1F), fontWeight: FontWeight.bold),
+                    unselectedIconTheme: const IconThemeData(
+                      color: Colors.white54,
+                    ),
+                    selectedIconTheme: const IconThemeData(
+                      color: Color(0xFFFF5A1F),
+                    ),
+                    unselectedLabelTextStyle: const TextStyle(
+                      color: Colors.white54,
+                    ),
+                    selectedLabelTextStyle: const TextStyle(
+                      color: Color(0xFFFF5A1F),
+                      fontWeight: FontWeight.bold,
+                    ),
                     leading: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0, top: 10.0),
+                          padding: const EdgeInsets.only(
+                            bottom: 16.0,
+                            top: 10.0,
+                          ),
                           child: IconButton(
                             icon: const Icon(Icons.menu, color: Colors.white),
                             onPressed: () {
@@ -90,13 +101,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         ),
                         CircleAvatar(
                           backgroundColor: const Color(0xFFFF5A1F),
-                          radius: _isExpanded ? 30 : 20, 
+                          radius: _isExpanded ? 30 : 20,
                           child: Text(
-                            _userName.isNotEmpty ? _userName[0].toUpperCase() : 'A',
+                            _userName.isNotEmpty
+                                ? _userName[0].toUpperCase()
+                                : 'A',
                             style: TextStyle(
-                              color: Colors.white, 
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: _isExpanded ? 24 : 16
+                              fontSize: _isExpanded ? 24 : 16,
                             ),
                           ),
                         ),
@@ -104,25 +117,44 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         if (_isExpanded) ...[
                           Text(
                             _userName,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 4),
                           Text(
                             _userRole,
-                            style: const TextStyle(color: Colors.white54, fontSize: 12),
+                            style: const TextStyle(
+                              color: Colors.white54,
+                              fontSize: 12,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 10),
-                        ]
+                        ],
                       ],
                     ),
 
                     destinations: const [
-                      NavigationRailDestination(icon: Icon(Icons.dashboard), label: Text("Resumen")),
-                      NavigationRailDestination(icon: Icon(Icons.inventory_2), label: Text("Inventario")),
-                      NavigationRailDestination(icon: Icon(Icons.videocam), label: Text("Monitor en Vivo")),
-                      NavigationRailDestination(icon: Icon(Icons.star), label: Text("Premios")),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.dashboard),
+                        label: Text("Resumen"),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.inventory_2),
+                        label: Text("Inventario"),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.videocam),
+                        label: Text("Monitor en Vivo"),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.star),
+                        label: Text("Premios"),
+                      ),
                     ],
                     selectedIndex: _selectedView,
                     onDestinationSelected: (int index) {
@@ -131,7 +163,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ),
                 InkWell(
-                  onTap: _handleLogout, 
+                  onTap: _handleLogout,
                   child: Container(
                     width: _isExpanded ? 200 : 72,
                     padding: const EdgeInsets.symmetric(vertical: 20),
@@ -143,7 +175,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           const SizedBox(width: 15),
                           const Text(
                             "Cerrar Sesión",
-                            style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ],

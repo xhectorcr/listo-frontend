@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/storage_service.dart';
-import 'login_screen.dart'; 
+import '../web/landing_page.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,7 +11,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final StorageService _storageService = StorageService();
-  
+
   String _userName = 'Cargando...';
   String _userRole = 'Cargando...';
 
@@ -24,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadProfileData() async {
     final name = await _storageService.getUserName();
     final role = await _storageService.getRole();
-    
+
     setState(() {
       _userName = name ?? 'Usuario Invitado';
       _userRole = role ?? 'Sin Rol';
@@ -34,13 +34,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _logout() async {
     // Limpiamos la bóveda segura
     await _storageService.clearAuthData();
-    
+
     if (!mounted) return;
-    
-    // Regresamos al Login y destruimos el historial de navegación para que no puedan darle atrás
+
+    // Regresamos a la Landing pública y destruimos el historial de navegación
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      MaterialPageRoute(builder: (context) => const LandingPage()),
       (route) => false,
     );
   }
@@ -48,7 +48,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100, // Fondo gris claro para resaltar las tarjetas
+      backgroundColor:
+          Colors.grey.shade100, // Fondo gris claro para resaltar las tarjetas
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -80,7 +81,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         radius: 50,
                         backgroundColor: Colors.white,
                         child: Text(
-                          _userName.isNotEmpty ? _userName[0].toUpperCase() : 'L',
+                          _userName.isNotEmpty
+                              ? _userName[0].toUpperCase()
+                              : 'L',
                           style: const TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
@@ -101,9 +104,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 5),
                       // Rol tipo "Badge"
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF00C8D6), // Cyan para el badge del rol
+                          color: const Color(
+                            0xFF00C8D6,
+                          ), // Cyan para el badge del rol
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -124,7 +132,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   top: 40, // Margen para la barra de estado del celular
                   left: 10,
                   child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ),
@@ -138,8 +150,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                 
-                  
                   _buildProfileOption(
                     icon: Icons.payment_outlined,
                     title: 'Métodos de Pago',
@@ -153,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {},
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Botón de Cerrar Sesión
                   SizedBox(
                     width: double.infinity,
@@ -219,8 +229,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Icon(icon, color: const Color(0xFFFF5A1F)),
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle, style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+        ),
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: Colors.grey,
+        ),
         onTap: onTap,
       ),
     );

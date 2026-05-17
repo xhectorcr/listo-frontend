@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../screens/login_screen.dart';
+
 final TextEditingController emailController = TextEditingController();
 
 class LandingPage extends StatelessWidget {
@@ -55,22 +57,16 @@ class LandingPage extends StatelessWidget {
               style: TextStyle(color: Colors.black87),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 8.0,
-            ),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF5A1F),
-              ),
-              onPressed: () {},
-              child: const Text(
-                "Crear Cuenta",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+            child: const Text("Login", style: TextStyle(color: Colors.black87)),
           ),
+          // El botón "Crear Cuenta" fue eliminado por petición del usuario.
         ],
       ),
       body: SingleChildScrollView(

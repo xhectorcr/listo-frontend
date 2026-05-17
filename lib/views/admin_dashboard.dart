@@ -3,6 +3,7 @@ import '../views/summary_view.dart';
 import '../views/inventory_view.dart';
 import '../views/live_monitor_view.dart';
 import 'admin_login_screen.dart';
+import '../web/landing_page.dart';
 import '../services/storage_service.dart';
 import 'admin_scanner_view.dart';
 
@@ -52,7 +53,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const AdminLoginScreen()),
+        MaterialPageRoute(builder: (context) => const LandingPage()),
       );
     }
   }

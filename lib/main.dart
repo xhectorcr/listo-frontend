@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'screens/login_screen.dart'; // Solo importa la parte móvil
 import 'web/landing_page.dart';
 
@@ -18,7 +19,8 @@ class ClienteApp extends StatelessWidget {
         primaryColor: const Color(0xFFFF5A1F),
         fontFamily: 'Roboto',
       ),
-      home: const LoginScreen(), // Arranca la app de clientes
+      // Si estamos en web (p. ej. `flutter run -d edge`), mostrar la landing pública.
+      home: kIsWeb ? const LandingPage() : const LoginScreen(),
     );
   }
 }

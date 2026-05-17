@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import '../web/admin_dashboard.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 
@@ -45,35 +46,39 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (result['success'] == true) {
-      // 🛡️ RESTRICCIÓN DE ROL: Solo permitimos el paso a Clientes
-      if (result['rol'] == 'Cliente') {
-        // Guardamos TODA la sesión universalmente
-        await _storageService.saveAuthData(
-          result['token'],
-          result['usuario'],
-          result['rol'],
-        );
+      // Guardamos la sesión y redirigimos según el rol recibido (Cliente o Admin).
+      await _storageService.saveAuthData(
+        result['token'],
+        result['usuario'],
+        result['rol'],
+      );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result['message'] ?? '¡Bienvenido!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? '¡Bienvenido!'),
+          backgroundColor: Colors.green,
+        ),
+      );
 
+      // Redirección por rol (comparación flexible)
+      final String roleStr = (result['rol'] ?? '').toString().toLowerCase();
+
+      if (roleStr.contains('cliente')) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
+      } else if (roleStr.contains('admin') ||
+          roleStr.contains('administrador')) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AdminDashboard()),
+        );
       } else {
-        // Bloqueo a administradores, repartidores, etc.
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Acceso denegado: Esta aplicación es exclusiva para Clientes.',
-            ),
-            backgroundColor: Colors.redAccent,
-          ),
+        // Por defecto, tratar como cliente
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       }
     } else {
