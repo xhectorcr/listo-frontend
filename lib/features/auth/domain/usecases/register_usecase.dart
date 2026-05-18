@@ -5,11 +5,11 @@ class RegisterUseCase {
 
   RegisterUseCase(this.repository);
 
-  Future<bool> call(String nombre, String correo, String password, String telefono) async {
-    if (nombre.isEmpty || correo.isEmpty || password.isEmpty) {
+  Future<bool> call(String nombre, String dni, String correo, String password, String telefono) async {
+    if (nombre.isEmpty || dni.isEmpty || correo.isEmpty || password.isEmpty) {
       throw Exception('Completa todos los campos obligatorios');
     }
     
-    return await repository.registrarCliente(nombre, correo, password, telefono);
+    return await repository.registrarCliente(nombre, dni, correo, password, telefono);
   }
 }

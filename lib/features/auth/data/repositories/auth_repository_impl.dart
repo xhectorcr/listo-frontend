@@ -19,9 +19,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> registrarCliente(String nombre, String correo, String password, String telefono) async {
+  Future<bool> registrarCliente(String nombre, String dni, String correo, String password, String telefono) async {
     try {
-      return await remoteDataSource.registrarCliente(nombre, correo, password, telefono);
+      return await remoteDataSource.registrarCliente(nombre, dni, correo, password, telefono);
     } catch (e) {
       rethrow;
     }

@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:listo_app/core/env/environment.dart';
+
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -19,8 +24,78 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _isSearchingDni = false;
 
   final Color primaryColor = const Color(0xFFFF5A1F);
+
+  Future<String> _getOrCreateDeviceId() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? deviceId = prefs.getString('device_id');
+    if (deviceId == null) {
+      final random = Random.secure();
+      final values = List<int>.generate(16, (i) => random.nextInt(256));
+      deviceId = values.map((e) => e.toRadixString(16).padLeft(2, '0')).join();
+      await prefs.setString('device_id', deviceId);
+    }
+    return deviceId;
+  }
+
+  Future<void> _buscarDni(String dni) async {
+    if (dni.length != 8) {
+      _showSnackBar('El DNI debe tener 8 dígitos', Colors.orange);
+      return;
+    }
+
+    setState(() {
+      _isSearchingDni = true;
+    });
+
+    try {
+      final deviceId = await _getOrCreateDeviceId();
+
+      final response = await http.get(
+        Uri.parse('${Environment.apiUrl}/usuario/dni/$dni'),
+        headers: {
+          'X-Device-ID': deviceId,
+        },
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        
+        final String nombres = data['nombres'] ?? data['first_name'] ?? '';
+        final String apPaterno = data['apellidoPaterno'] ?? data['first_last_name'] ?? '';
+        final String apMaterno = data['apellidoMaterno'] ?? data['second_last_name'] ?? '';
+        
+        String nombreCompleto = '';
+        if (apPaterno.isNotEmpty || apMaterno.isNotEmpty) {
+          nombreCompleto = '$nombres $apPaterno $apMaterno'.trim();
+        } else {
+          nombreCompleto = data['nombreCompleto'] ?? data['full_name'] ?? nombres;
+        }
+
+        if (nombreCompleto.isNotEmpty) {
+          setState(() {
+            _nombreController.text = nombreCompleto;
+          });
+          _showSnackBar('Datos de RENIEC cargados exitosamente', Colors.green);
+        } else {
+          _showSnackBar('No se encontraron nombres para este DNI', Colors.orange);
+        }
+      } else if (response.statusCode == 429) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        _showSnackBar(data['message'] ?? 'Límite de consultas excedido.', Colors.red);
+      } else {
+        _showSnackBar('No se encontró el DNI o el servicio no está disponible', Colors.orange);
+      }
+    } catch (e) {
+      _showSnackBar('Error al conectar con el servicio de DNI', Colors.red);
+    } finally {
+      setState(() {
+        _isSearchingDni = false;
+      });
+    }
+  }
 
   Future<void> _registrar() async {
     FocusScope.of(context).unfocus();
@@ -43,6 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     
     final success = await authProvider.registrarCliente(
       _nombreController.text.trim(),
+      _dniController.text.trim(),
       _correoController.text.trim(),
       _passwordController.text,
       _telefonoController.text.trim(),
@@ -200,11 +276,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 18),
 
                 // DNI
-                _input(
+                TextField(
                   controller: _dniController,
-                  hint: 'DNI',
-                  icon: Icons.badge_outlined,
                   keyboardType: TextInputType.number,
+                  maxLength: 8,
+                  textInputAction: TextInputAction.next,
+                  onChanged: (value) {
+                    if (value.trim().length == 8) {
+                      _buscarDni(value.trim());
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'DNI',
+                    counterText: '', // Ocultar contador por estética
+                    prefixIcon: const Icon(Icons.badge_outlined),
+                    suffixIcon: _isSearchingDni
+                        ? const Padding(
+                            padding: EdgeInsets.all(14.0),
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFFFF5A1F),
+                              ),
+                            ),
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.search_rounded, color: Color(0xFFFF5A1F)),
+                            onPressed: () {
+                              _buscarDni(_dniController.text.trim());
+                            },
+                          ),
+                    filled: true,
+                    fillColor: const Color(0xFFF7F7F7),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: const BorderSide(color: Color(0xFFFF5A1F), width: 2),
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 18),

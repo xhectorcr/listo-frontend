@@ -41,13 +41,13 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> registrarCliente(String nombre, String correo, String password, String telefono) async {
+  Future<bool> registrarCliente(String nombre, String dni, String correo, String password, String telefono) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final result = await registerUseCase(nombre, correo, password, telefono);
+      final result = await registerUseCase(nombre, dni, correo, password, telefono);
       _isLoading = false;
       notifyListeners();
       return result;

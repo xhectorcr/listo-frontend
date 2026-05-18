@@ -5,7 +5,7 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String correo, String password);
-  Future<bool> registrarCliente(String nombre, String correo, String password, String telefono);
+  Future<bool> registrarCliente(String nombre, String dni, String correo, String password, String telefono);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -32,12 +32,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<bool> registrarCliente(String nombre, String correo, String password, String telefono) async {
+  Future<bool> registrarCliente(String nombre, String dni, String correo, String password, String telefono) async {
     final response = await client.post(
       Uri.parse('$_baseUrl/usuario/registrarCliente'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'nombre': nombre,
+        'dni': dni,
         'correo': correo,
         'password': password,
         'telefono': telefono,
