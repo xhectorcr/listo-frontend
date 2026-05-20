@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../../core/env/environment.dart';
 
 class UsuarioService {
   static const String baseUrl =
-      'http://localhost:5115/api/usuario/lista/activos?pageNumber=1&pageSize=50';
+      '${Environment.apiUrl}/usuario/lista/activos?pageNumber=1&pageSize=50';
 
   Future<List<dynamic>> obtenerUsuarios() async {
     try {

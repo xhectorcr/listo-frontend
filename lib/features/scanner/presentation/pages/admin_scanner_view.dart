@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
+import '../../../../core/env/environment.dart';
 
 class AdminScannerView extends StatefulWidget {
   const AdminScannerView({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _AdminScannerViewState extends State<AdminScannerView> {
       final payload = jsonDecode(qrData);
 
       final response = await http.post(
-        Uri.parse('https://tu-backend-api.com/api/compra/validar-qr'),
+        Uri.parse('${Environment.apiUrl}/compra/validar-qr'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(payload),
       );

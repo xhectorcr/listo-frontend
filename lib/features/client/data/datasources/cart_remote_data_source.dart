@@ -7,9 +7,8 @@ abstract class CartRemoteDataSource {
 }
 
 class CartRemoteDataSourceImpl implements CartRemoteDataSource {
-  // Using the hardcoded localhost port as in original cart_screen, or Environment.
-  // We'll use Environment and fallback if needed, but original had 5115.
-  final String _baseUrl = 'http://127.0.0.1:5115/api';
+  // Using the API URL from Environment configuration
+  final String _baseUrl = Environment.apiUrl;
 
   @override
   Future<Map<String, dynamic>> getCart(int userId) async {
