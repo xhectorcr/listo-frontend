@@ -43,9 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       await _storageService.saveAuthData(
-        authProvider.user!.token,
-        authProvider.user!.usuario,
-        authProvider.user!.rol,
+       authProvider.user!.id,       // 1. ID
+       authProvider.user!.token,    // 2. Token
+       authProvider.user!.usuario,  // 3. Usuario
+      authProvider.user!.rol,      // 4. Rol
       );
 
       final String roleStr = (authProvider.user!.rol).toLowerCase();
