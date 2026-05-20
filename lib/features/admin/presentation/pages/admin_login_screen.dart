@@ -14,57 +14,65 @@ class AdminLoginScreen extends StatefulWidget {
 class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
 
   final StorageService _storageService = StorageService();
 
-  
   bool _isObscure = true;
 
-
   Future<void> _handleLogin() async {
-
-    if (_correoController.text.trim().isEmpty || _passwordController.text.isEmpty) {
+    if (_correoController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor ingresa correo y contraseña'), backgroundColor: Colors.orange),
+        const SnackBar(
+          content: Text('Por favor ingresa correo y contraseña'),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
 
     final authProvider = context.read<AuthProvider>();
-    
+
     final success = await authProvider.login(
-      _correoController.text.trim(), 
-      _passwordController.text
+      _correoController.text.trim(),
+      _passwordController.text,
     );
 
     if (!mounted) return;
 
     if (success) {
       if (authProvider.user!.rol.toLowerCase().contains('admin')) {
-        
         await _storageService.saveAuthData(
+          authProvider.user!.id,
           authProvider.user!.token,
-          authProvider.user!.usuario, 
-          authProvider.user!.rol      
+          authProvider.user!.usuario,
+          authProvider.user!.rol,
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Acceso correcto'), backgroundColor: Colors.green),
+          const SnackBar(
+            content: Text('Acceso correcto'),
+            backgroundColor: Colors.green,
+          ),
         );
 
         context.go('/admin');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Acceso denegado: Esta vista es solo para administradores.'), 
-            backgroundColor: Colors.orange
+            content: Text(
+              'Acceso denegado: Esta vista es solo para administradores.',
+            ),
+            backgroundColor: Colors.orange,
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authProvider.errorMessage ?? 'Error al iniciar sesión'), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text(authProvider.errorMessage ?? 'Error al iniciar sesión'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -79,7 +87,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthProvider>().isLoading;
-    
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       body: Center(
@@ -149,7 +157,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
               ),
               const SizedBox(height: 8),
               TextField(
-                controller: _correoController, 
+                controller: _correoController,
                 decoration: InputDecoration(
                   hintText: 'admin@listogo.com',
                   prefixIcon: const Icon(Icons.person_outline),
@@ -196,7 +204,6 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
               ),
               const SizedBox(height: 40),
 
-          
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -208,25 +215,25 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                     ),
                     elevation: 0,
                   ),
-                
-                  onPressed: isLoading ? null : _handleLogin, 
-                  child: isLoading 
-                    ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
+
+                  onPressed: isLoading ? null : _handleLogin,
+                  child: isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : const Text(
+                          'Ingresar al Dashboard',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      )
-                    : const Text(
-                        'Ingresar al Dashboard',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                 ),
               ),
             ],
