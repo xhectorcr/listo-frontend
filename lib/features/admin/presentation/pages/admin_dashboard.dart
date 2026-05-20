@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../views/summary_view.dart';
 import '../views/inventory_view.dart';
 import '../views/live_monitor_view.dart';
+import 'lista_usuarios_page.dart';
 import '../../../landing/presentation/pages/landing_page.dart';
 import '../../../../core/local_storage/storage_service.dart';
 
@@ -24,6 +25,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     const SummaryView(),
     const InventoryView(),
     const LiveMonitorView(),
+    const ListaUsuariosPage(),
     const Center(child: Text("Configuración de Recompensas")),
   ];
 
@@ -149,6 +151,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       NavigationRailDestination(
                         icon: Icon(Icons.videocam),
                         label: Text("Monitor en Vivo"),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.people),
+                        label: Text("Usuarios"),
                       ),
                       NavigationRailDestination(
                         icon: Icon(Icons.star),
