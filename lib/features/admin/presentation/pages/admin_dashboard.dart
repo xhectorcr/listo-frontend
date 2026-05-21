@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../views/summary_view.dart';
 import '../views/inventory_view.dart';
 import '../views/live_monitor_view.dart';
+import '../views/premios_view.dart';
 import 'lista_usuarios_page.dart';
 import '../../../landing/presentation/pages/landing_page.dart';
 import '../../../../core/local_storage/storage_service.dart';
@@ -25,8 +26,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
     const SummaryView(),
     const InventoryView(),
     const LiveMonitorView(),
-    const ListaUsuariosPage(),
-    const Center(child: Text("Configuración de Recompensas")),
+    const ListaUsuariosPage(isEmbedded: true),
+    const PremiosView(),
   ];
 
   @override

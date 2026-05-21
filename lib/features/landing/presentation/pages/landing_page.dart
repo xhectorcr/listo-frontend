@@ -450,12 +450,12 @@ class LandingPage extends StatelessWidget {
         runSpacing: 30,
         alignment: WrapAlignment.center,
         children: [
-          _productCard("Coca Cola", "S/ 3.50"),
-          _productCard("Inca Kola", "S/ 3.50"),
-          _productCard("Papas Lays", "S/ 2.50"),
-          _productCard("Oreo", "S/ 1.20"),
-          _productCard("Agua San Luis", "S/ 2.00"),
-          _productCard("Snickers", "S/ 3.00"),
+          _productCard("Coca Cola", "S/ 3.50", "assets/image/coca-cola.webp"),
+          _productCard("Inca Kola", "S/ 3.50", "assets/image/inka-cola.webp"),
+          _productCard("Papas Lays", "S/ 2.50", "assets/image/papas-lays.jpg"),
+          _productCard("Oreo", "S/ 1.20", "assets/image/oreo.jpg"),
+          _productCard("Agua San Luis", "S/ 2.00", "assets/image/agua-sanluis.jpg"),
+          _productCard("Snickers", "S/ 3.00", "assets/image/snickers.png"),
         ],
       ),
     );
@@ -520,7 +520,7 @@ class LandingPage extends StatelessWidget {
         children: [
           Expanded(
             child: Image.asset(
-              "assets/cocainca.jpg",
+              "assets/image/mobile_app.png",
               height: 400,
               fit: BoxFit.cover,
             ),
@@ -712,7 +712,7 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  Widget _productCard(String title, String price) {
+  Widget _productCard(String title, String price, String imagePath) {
     return Container(
       width: 220,
       padding: const EdgeInsets.all(18),
@@ -732,7 +732,7 @@ class LandingPage extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(18),
             child: Image.asset(
-              "assets/cocainca.jpg",
+              imagePath,
               height: 160,
               fit: BoxFit.cover,
             ),
