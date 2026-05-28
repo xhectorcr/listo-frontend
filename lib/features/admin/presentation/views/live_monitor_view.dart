@@ -21,7 +21,7 @@ class _LiveMonitorViewState extends State<LiveMonitorView> {
     if (kIsWeb) {
       ui.platformViewRegistry.registerViewFactory(_viewId, (int viewId) {
         final img = web.HTMLImageElement()
-          ..src = 'http://127.0.0.1:8000/video/$adminUsuarioId'
+          ..src = 'https://yolocam.onrender.com/video/$adminUsuarioId'
           ..style.width = '100%'
           ..style.height = '100%'
           ..style.objectFit = 'contain'
@@ -71,7 +71,7 @@ class _LiveMonitorViewState extends State<LiveMonitorView> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "Conectado a: http://127.0.0.1:8000/video/$adminUsuarioId",
+                  "Conectado a: https://yolocam.onrender.com/video/$adminUsuarioId",
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
