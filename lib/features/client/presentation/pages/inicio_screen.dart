@@ -1,7 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:math';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:http/http.dart' as http;
+import '../../../../core/env/environment.dart';
+import '../../../../core/local_storage/storage_service.dart';
 
 class InicioScreen extends StatefulWidget {
   const InicioScreen({super.key});
@@ -11,37 +12,52 @@ class InicioScreen extends StatefulWidget {
 }
 
 class _InicioScreenState extends State<InicioScreen> {
-  String _qrData = "Cargando...";
-  Timer? _timer;
-  int _segundosRestantes = 15;
+  String _pin = "Cargando...";
 
   @override
   void initState() {
     super.initState();
-    _generarNuevoToken();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted) {
+    _fetchDynamicPin();
+  }
+
+  Future<void> _fetchDynamicPin() async {
+    try {
+      final storage = StorageService();
+      final String? userId = await storage.getId();
+
+      if (userId == null) {
         setState(() {
-          if (_segundosRestantes > 0) {
-            _segundosRestantes--;
-          } else {
-            _generarNuevoToken();
-            _segundosRestantes = 15;
-          }
+          _pin = "Error: Sin Sesión";
+        });
+        return;
+      }
+
+      final url = Uri.parse('${Environment.apiUrl}/usuario/generar-pin/$userId');
+      final response = await http.post(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success'] == true && data['data'] != null) {
+          setState(() {
+            _pin = data['data'].toString();
+          });
+        } else {
+          setState(() {
+            _pin = "Error";
+          });
+        }
+      } else {
+        print("Error API status code: ${response.statusCode} - body: ${response.body}");
+        setState(() {
+          _pin = "Error API";
         });
       }
-    });
-  }
-
-  void _generarNuevoToken() {
-    final tokenAleatorio = Random().nextInt(999999).toString().padLeft(6, '0');
-    _qrData = "LISTO-USER-$tokenAleatorio";
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+    } catch (e) {
+      print("Excepción al pedir el PIN: $e");
+      setState(() {
+        _pin = "Error de red";
+      });
+    }
   }
 
   @override
@@ -51,13 +67,13 @@ class _InicioScreenState extends State<InicioScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'Escanea este QR\npara entrar a la tienda',
+            'Ingresa este código\npara entrar a la tienda',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -69,11 +85,14 @@ class _InicioScreenState extends State<InicioScreen> {
                 ),
               ],
             ),
-            child: QrImageView(
-              data: _qrData,
-              version: QrVersions.auto,
-              size: 250.0,
-              foregroundColor: const Color(0xFFFF5A1F),
+            child: Text(
+              _pin,
+              style: const TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 8,
+                color: Color(0xFFFF5A1F),
+              ),
             ),
           ),
           const SizedBox(height: 30),
@@ -84,11 +103,9 @@ class _InicioScreenState extends State<InicioScreen> {
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(
-              'Actualizando en: $_segundosRestantes seg',
+              'Código único temporal',
               style: TextStyle(
-                color: _segundosRestantes <= 5
-                    ? Colors.red
-                    : Colors.grey.shade700,
+                color: Colors.grey.shade700,
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),

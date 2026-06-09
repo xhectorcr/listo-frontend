@@ -42,6 +42,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (success) {
+      final String roleStr = (authProvider.user!.rol).toLowerCase();
+
+      if (roleStr.contains('admin') || roleStr.contains('administrador')) {
+        authProvider.logout();
+        _showSnackBar('Esta aplicación es exclusiva para clientes. Las cuentas de administrador no tienen acceso.', Colors.red);
+        return;
+      }
+
       await _storageService.saveAuthData(
        authProvider.user!.id,       // 1. ID
        authProvider.user!.token,    // 2. Token
@@ -49,13 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       authProvider.user!.rol,      // 4. Rol
       );
 
-      final String roleStr = (authProvider.user!.rol).toLowerCase();
-
-      if (roleStr.contains('admin') || roleStr.contains('administrador')) {
-        context.go('/admin');
-      } else {
-        context.go('/home');
-      }
+      context.go('/home');
     } else {
       _showSnackBar(
         authProvider.errorMessage ?? 'Credenciales incorrectas',
