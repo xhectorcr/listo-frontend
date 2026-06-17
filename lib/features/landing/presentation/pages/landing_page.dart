@@ -1,18 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/gestures.dart';
-import 'dart:html' as html;
+import 'landing_page_styles.dart';
+import 'landing_page_widgets.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5A1F);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: LandingStyles.scaffoldBackground,
       extendBodyBehindAppBar: true,
 
       // =========================
@@ -27,11 +25,7 @@ class LandingPage extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
             child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.black.withOpacity(0.05)),
-                ),
-              ),
+              decoration: LandingStyles.navbarBlurBorderDecoration,
             ),
           ),
         ),
@@ -41,45 +35,25 @@ class LandingPage extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: primaryColor,
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                decoration: LandingStyles.navbarLogoDecoration,
                 child: const Text(
                   "L!",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 20,
-                  ),
+                  style: LandingStyles.logoTextStyle,
                 ),
               ),
-
               const SizedBox(width: 14),
-
               const Text(
                 "LISTO! GO",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1,
-                ),
+                style: LandingStyles.brandTextStyle,
               ),
-
               const Spacer(),
-
               TextButton(
                 onPressed: () {
                   context.go('/login');
                 },
                 child: const Text(
                   "Iniciar sesión",
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
+                  style: LandingStyles.loginButtonTextStyle,
                 ),
               ),
             ],
@@ -102,6 +76,7 @@ class LandingPage extends StatelessWidget {
       ),
     );
   }
+
   // =====================================================
   // HERO SECTION RESPONSIVE
   // =====================================================
@@ -125,13 +100,7 @@ class LandingPage extends StatelessWidget {
         bottom: mobile ? 40 : 50,
       ),
 
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFFFFFF), Color(0xFFFFF4EF)],
-        ),
-      ),
+      decoration: LandingStyles.heroBackgroundDecoration,
 
       child: Center(
         child: ConstrainedBox(
@@ -164,21 +133,10 @@ class LandingPage extends StatelessWidget {
                         horizontal: 18,
                         vertical: 10,
                       ),
-
-                      decoration: BoxDecoration(
-                        color: primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-
+                      decoration: LandingStyles.heroBadgeDecoration,
                       child: const Text(
                         "SMART SHOPPING EXPERIENCE",
-
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1,
-                          fontSize: 12,
-                        ),
+                        style: LandingStyles.heroBadgeTextStyle,
                       ),
                     ),
 
@@ -187,15 +145,10 @@ class LandingPage extends StatelessWidget {
                     // TITULO
                     Text(
                       "El futuro de las compras ya está aquí",
-
                       textAlign: mobile ? TextAlign.center : TextAlign.left,
-
-                      style: TextStyle(
-                        fontSize: mobile ? 38 : 64,
-                        height: 1.05,
-                        fontWeight: FontWeight.w900,
-                        color: const Color(0xFF111111),
-                      ),
+                      style: mobile 
+                          ? LandingStyles.heroTitleMobileStyle 
+                          : LandingStyles.heroTitleDesktopStyle,
                     ),
 
                     SizedBox(height: mobile ? 18 : 25),
@@ -203,18 +156,13 @@ class LandingPage extends StatelessWidget {
                     // DESCRIPCION
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 650),
-
                       child: Text(
                         "Compra sin filas, sin cajeros y sin esperas. "
                         "Solo entra, toma tus productos y sal automáticamente.",
-
                         textAlign: mobile ? TextAlign.center : TextAlign.left,
-
-                        style: TextStyle(
-                          fontSize: mobile ? 16 : 18,
-                          height: 1.7,
-                          color: Colors.grey.shade700,
-                        ),
+                        style: mobile 
+                            ? LandingStyles.heroDescMobileStyle 
+                            : LandingStyles.heroDescDesktopStyle,
                       ),
                     ),
 
@@ -222,32 +170,13 @@ class LandingPage extends StatelessWidget {
 
                     // BOTON
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 34,
-                          vertical: 22,
-                        ),
-
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      ),
-
+                      style: LandingStyles.heroButtonStyle,
                       onPressed: () {
                         context.go('/login');
                       },
-
                       child: const Text(
                         "Iniciar sesión",
-
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: LandingStyles.heroButtonTextStyle,
                       ),
                     ),
 
@@ -259,15 +188,13 @@ class LandingPage extends StatelessWidget {
                     Wrap(
                       spacing: 20,
                       runSpacing: 20,
-
                       alignment: mobile
                           ? WrapAlignment.center
                           : WrapAlignment.start,
-
-                      children: [
-                        _heroStat("99.8%", "Precisión IA"),
-                        _heroStat("+10K", "Productos detectados"),
-                        _heroStat("24/7", "Automatización"),
+                      children: const [
+                        HeroStat(value: "99.8%", label: "Precisión IA"),
+                        HeroStat(value: "+10K", label: "Productos detectados"),
+                        HeroStat(value: "24/7", label: "Automatización"),
                       ],
                     ),
                   ],
@@ -281,66 +208,41 @@ class LandingPage extends StatelessWidget {
               // =====================================================
               Expanded(
                 flex: 5,
-
                 child: Center(
                   child: Stack(
                     alignment: Alignment.center,
-
                     children: [
                       // FONDO DIFUMINADO
                       Container(
                         width: mobile ? 320 : 560,
                         height: mobile ? 320 : 560,
-
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-
-                          gradient: RadialGradient(
-                            colors: [
-                              primaryColor.withOpacity(0.15),
-                              primaryColor.withOpacity(0.02),
-                            ],
-                          ),
-                        ),
+                        decoration: LandingStyles.heroImageBackgroundDecoration,
                       ),
 
                       // IMAGEN
                       ClipRRect(
                         borderRadius: BorderRadius.circular(35),
-
                         child: Image.asset(
                           "assets/image/landing-1.webp",
-
                           width: mobile ? 330 : 620,
                           height: mobile ? 330 : 500,
-
                           fit: BoxFit.cover,
-
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
                               width: mobile ? 330 : 620,
                               height: mobile ? 330 : 500,
-
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-
+                              decoration: LandingStyles.heroImageFallbackDecoration,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-
                                 children: [
                                   Icon(
                                     Icons.broken_image_rounded,
                                     size: 80,
                                     color: Colors.grey.shade500,
                                   ),
-
                                   const SizedBox(height: 15),
-
                                   Text(
                                     "No se pudo cargar la imagen",
-
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontWeight: FontWeight.w600,
@@ -364,64 +266,11 @@ class LandingPage extends StatelessWidget {
   }
 
   // =====================================================
-  // HERO STATS
-  // =====================================================
-
-  Widget _heroStat(String value, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-
-        children: [
-          Text(
-            value,
-
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF111111),
-            ),
-          ),
-
-          const SizedBox(height: 6),
-
-          Text(
-            label,
-
-            textAlign: TextAlign.center,
-
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey.shade700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // =====================================================
   // HOW IT WORKS
   // =====================================================
 
   Widget _howItWorksSection() {
-    return _sectionWrapper(
+    return SectionWrapper(
       title: "¿Cómo funciona?",
       subtitle: "Comprar nunca fue tan simple.",
       dark: true,
@@ -429,11 +278,31 @@ class LandingPage extends StatelessWidget {
         spacing: 25,
         runSpacing: 25,
         alignment: WrapAlignment.center,
-        children: [
-          _stepCard("1", "Regístrate y Recarga","Crea tu cuenta aquí y recarga tu tarjeta virtual", Icons.account_balance_wallet),
-          _stepCard("2", "Genera tu PIN","Presiona Inicio en tu app e ingresa el código en la pantalla exterior", Icons.pin),
-          _stepCard("3", "Elige tus productos","Entra a la tienda y selecciona lo que deseas llevar", Icons.shopping_bag),
-          _stepCard("4", "Paga y Listo","Confirma el pago en la pantalla y retírate sin hacer filas", Icons.exit_to_app),
+        children: const [
+          StepCard(
+            step: "1", 
+            title: "Regístrate y Recarga",
+            description: "Crea tu cuenta aquí y recarga tu tarjeta virtual", 
+            icon: Icons.account_balance_wallet,
+          ),
+          StepCard(
+            step: "2", 
+            title: "Genera tu PIN",
+            description: "Presiona Inicio en tu app e ingresa el código en la pantalla exterior", 
+            icon: Icons.pin,
+          ),
+          StepCard(
+            step: "3", 
+            title: "Elige tus productos",
+            description: "Entra a la tienda y selecciona lo que deseas llevar", 
+            icon: Icons.shopping_bag,
+          ),
+          StepCard(
+            step: "4", 
+            title: "Paga y Listo",
+            description: "Confirma el pago en la pantalla y retírate sin hacer filas", 
+            icon: Icons.exit_to_app,
+          ),
         ],
       ),
     );
@@ -444,20 +313,20 @@ class LandingPage extends StatelessWidget {
   // =====================================================
 
   Widget _productsSection() {
-    return _sectionWrapper(
+    return SectionWrapper(
       title: "Productos destacados",
       subtitle: "Encuentra tus productos favoritos al instante.",
       child: Wrap(
         spacing: 30,
         runSpacing: 30,
         alignment: WrapAlignment.center,
-        children: [
-          _productCard("Coca Cola", "S/ 3.50", "assets/image/coca-cola.webp"),
-          _productCard("Inca Kola", "S/ 3.50", "assets/image/inka-cola.webp"),
-          _productCard("Papas Lays", "S/ 2.50", "assets/image/papas-lays.jpg"),
-          _productCard("Oreo", "S/ 1.20", "assets/image/oreo.jpg"),
-          _productCard("Agua San Luis", "S/ 2.00", "assets/image/agua-sanluis.jpg"),
-          _productCard("Snickers", "S/ 3.00", "assets/image/snickers.png"),
+        children: const [
+          ProductCard(title: "Coca Cola", price: "S/ 3.50", imagePath: "assets/image/coca-cola.webp"),
+          ProductCard(title: "Inca Kola", price: "S/ 3.50", imagePath: "assets/image/inka-cola.webp"),
+          ProductCard(title: "Papas Lays", price: "S/ 2.50", imagePath: "assets/image/papas-lays.jpg"),
+          ProductCard(title: "Oreo", price: "S/ 1.20", imagePath: "assets/image/oreo.jpg"),
+          ProductCard(title: "Agua San Luis", price: "S/ 2.00", imagePath: "assets/image/agua-sanluis.jpg"),
+          ProductCard(title: "Snickers", price: "S/ 3.00", imagePath: "assets/image/snickers.png"),
         ],
       ),
     );
@@ -468,17 +337,17 @@ class LandingPage extends StatelessWidget {
   // =====================================================
 
   Widget _discountSection(BuildContext context) {
-    return _sectionWrapper(
+    return SectionWrapper(
       title: "Ofertas y descuentos",
       subtitle: "Promociones automáticas impulsadas por IA.",
       child: Wrap(
         spacing: 30,
         runSpacing: 30,
         alignment: WrapAlignment.center,
-        children: [
-          _discountCard("2x1 en gaseosas", "Solo por hoy"),
-          _discountCard("Combo snacks", "Ahorra hasta 30%"),
-          _discountCard("Happy Hour", "Descuentos nocturnos"),
+        children: const [
+          DiscountCard(title: "2x1 en gaseosas", desc: "Solo por hoy"),
+          DiscountCard(title: "Combo snacks", desc: "Ahorra hasta 30%"),
+          DiscountCard(title: "Happy Hour", desc: "Descuentos nocturnos"),
         ],
       ),
     );
@@ -496,11 +365,11 @@ class LandingPage extends StatelessWidget {
         spacing: 60,
         runSpacing: 40,
         alignment: WrapAlignment.center,
-        children: [
-          _bigStat("10K+", "Compras registradas"),
-          _bigStat("99.8%", "Precisión IA"),
-          _bigStat("-80%", "Tiempo en filas"),
-          _bigStat("24/7", "Monitoreo"),
+        children: const [
+          BigStat(value: "10K+", label: "Compras registradas"),
+          BigStat(value: "99.8%", label: "Precisión IA"),
+          BigStat(value: "-80%", label: "Tiempo en filas"),
+          BigStat(value: "24/7", label: "Monitoreo"),
         ],
       ),
     );
@@ -514,7 +383,7 @@ class LandingPage extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final mobile = width < 900;
 
-    return _sectionWrapper(
+    return SectionWrapper(
       title: "Controla todo desde tu app",
       subtitle: "Gestiona promociones, historial y accesos desde tu celular.",
       child: Flex(
@@ -527,9 +396,7 @@ class LandingPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-
           const SizedBox(width: 40, height: 40),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -566,366 +433,30 @@ class LandingPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(50),
-      color: Colors.black,
+      color: LandingStyles.darkBackground,
       child: Column(
         children: [
           const Text(
             "LISTO! GO",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              fontSize: 30,
-            ),
+            style: LandingStyles.footerLogoStyle,
           ),
-
           const SizedBox(height: 20),
-
           Text(
             "Compras inteligentes impulsadas por IA.",
-            style: TextStyle(color: Colors.grey.shade500),
+            style: LandingStyles.footerSubtitleStyle,
           ),
-
           const SizedBox(height: 25),
-
           Wrap(
             spacing: 25,
-            children: [
-              _footerItem("Soporte"),
-              _footerItem("Privacidad"),
-              _footerItem("Términos"),
-              _footerItem("Contacto"),
+            children: const [
+              FooterItem(title: "Soporte"),
+              FooterItem(title: "Privacidad"),
+              FooterItem(title: "Términos"),
+              FooterItem(title: "Contacto"),
             ],
           ),
         ],
       ),
     );
-  }
-
-  // =====================================================
-  // COMPONENTS
-  // =====================================================
-
-  Widget _sectionWrapper({
-    required String title,
-    required String subtitle,
-    required Widget child,
-    bool dark = false,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
-      color: dark ? const Color(0xFF111111) : Colors.white,
-      child: Column(
-        children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: dark ? Colors.white : Colors.black,
-              fontSize: 42,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: dark ? Colors.grey.shade400 : Colors.grey.shade700,
-              fontSize: 18,
-            ),
-          ),
-
-          const SizedBox(height: 60),
-
-          child,
-        ],
-      ),
-    );
-  }
-
-  Widget _benefitCard(IconData icon, String title) {
-    return Container(
-      width: 240,
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 25,
-            offset: const Offset(0, 15),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 45, color: primaryColor),
-          const SizedBox(height: 20),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _stepCard(String step, String title,String description, IconData icon) {
-    return Container(
-      width: 240,
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Column(
-        children: [
-          Text(
-            step,
-            style: TextStyle(
-              color: primaryColor,
-              fontSize: 30,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          Icon(icon, color: Colors.white, size: 42),
-
-          const SizedBox(height: 20),
-
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 18,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          //control del enlace clickable
-          description == "Crea tu cuenta aquí y recarga tu tarjeta virtual"
-          ? RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              style: TextStyle(
-                color: Colors.grey[400],
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-                fontFamily: 'sans-serif'
-              ),
-              children: [
-                    const TextSpan(text: "Crea tu cuenta "),
-                    TextSpan(
-                      text: "aquí",
-                      style: TextStyle(
-                        color: primaryColor, // Tu color naranja de Listo Go
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline, // Te lo subraya como enlace
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          html.window.location.hash = '/login';
-                        },
-                    ),
-                    const TextSpan(text: " y recarga tu tarjeta virtual"),
-
-              ],
-            ),
-          )
-
-          : Text(
-            description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _productCard(String title, String price, String imagePath) {
-    return Container(
-      width: 220,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 25,
-            offset: const Offset(0, 15),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Image.asset(
-              imagePath,
-              height: 160,
-              fit: BoxFit.cover,
-            ),
-          ),
-
-          const SizedBox(height: 18),
-
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-            price,
-            style: const TextStyle(
-              color: primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _discountCard(String title, String desc) {
-    return Container(
-      width: 320,
-      padding: const EdgeInsets.all(35),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFF5A1F), Color(0xFFFF7A1F)],
-        ),
-        borderRadius: BorderRadius.circular(28),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(
-            Icons.local_fire_department,
-            color: Colors.white,
-            size: 40,
-          ),
-
-          const SizedBox(height: 25),
-
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              fontSize: 28,
-            ),
-          ),
-
-          const SizedBox(height: 15),
-
-          Text(desc, style: const TextStyle(color: Colors.white, fontSize: 17)),
-        ],
-      ),
-    );
-  }
-
-  Widget _techChip(String title) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-
-  Widget _bigStat(String value, String label) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: primaryColor,
-            fontSize: 52,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          label,
-          style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
-        ),
-      ],
-    );
-  }
-
-  Widget _locationCard(String city) {
-    return Container(
-      width: 260,
-      padding: const EdgeInsets.all(35),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(28),
-      ),
-      child: Column(
-        children: [
-          const Icon(Icons.location_on, color: primaryColor, size: 42),
-
-          const SizedBox(height: 20),
-
-          Text(
-            city,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 22,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _statItem(String value, String label) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.w800,
-            fontSize: 32,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(label, style: TextStyle(color: Colors.grey.shade700)),
-      ],
-    );
-  }
-
-  Widget _footerItem(String title) {
-    return Text(title, style: TextStyle(color: Colors.grey.shade400));
   }
 }
