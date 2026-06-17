@@ -16,6 +16,10 @@ import '../../features/products/data/repositories/category_repository_impl.dart'
 import '../../features/products/data/repositories/product_repository_impl.dart';
 import '../../features/products/domain/repositories/category_repository.dart';
 import '../../features/products/domain/repositories/product_repository.dart';
+import '../../features/products/domain/usecases/get_products_usecase.dart';
+import '../../features/products/domain/usecases/save_product_usecase.dart';
+import '../../features/products/domain/usecases/update_product_usecase.dart';
+import '../../features/products/domain/usecases/delete_product_usecase.dart';
 import '../../features/products/presentation/providers/category_provider.dart';
 import '../../features/products/presentation/providers/product_provider.dart';
 
@@ -23,6 +27,7 @@ import '../../features/products/presentation/providers/product_provider.dart';
 import '../../features/client/data/datasources/cart_remote_data_source.dart';
 import '../../features/client/data/repositories/cart_repository_impl.dart';
 import '../../features/client/domain/repositories/cart_repository.dart';
+import '../../features/client/domain/usecases/get_cart_usecase.dart';
 import '../../features/client/presentation/providers/cart_provider.dart';
 
 final GetIt sl = GetIt.instance;
@@ -61,7 +66,18 @@ Future<void> init() async {
   // Features: Products
   // ---------------------------------------------------------------------------
   
-  sl.registerFactory(() => ProductProvider(productRepository: sl()));
+  sl.registerFactory(() => ProductProvider(
+    getProductsUseCase: sl(),
+    saveProductUseCase: sl(),
+    updateProductUseCase: sl(),
+    deleteProductUseCase: sl(),
+  ));
+  
+  sl.registerLazySingleton(() => GetProductsUseCase(sl()));
+  sl.registerLazySingleton(() => SaveProductUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProductUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteProductUseCase(sl()));
+
   sl.registerFactory(() => CategoryProvider(categoryRepository: sl()));
 
   sl.registerLazySingleton<ProductRepository>(
@@ -82,7 +98,10 @@ Future<void> init() async {
   // Features: Client (Cart)
   // ---------------------------------------------------------------------------
   
-  sl.registerFactory(() => CartProvider(cartRepository: sl()));
+  // Casos de Uso
+  sl.registerLazySingleton(() => GetCartUseCase(sl()));
+
+  sl.registerFactory(() => CartProvider(getCartUseCase: sl()));
 
   sl.registerLazySingleton<CartRepository>(
     () => CartRepositoryImpl(remoteDataSource: sl()),

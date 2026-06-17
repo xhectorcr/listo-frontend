@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:listo_app/core/local_storage/storage_service.dart';
-import 'package:listo_app/features/client/presentation/models/metodo_pago_model.dart';
+import 'package:listo_app/features/client/data/models/metodo_pago_model.dart';
 import 'package:listo_app/core/env/environment.dart';
 
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/states/view_state.dart';
 import '../providers/cart_provider.dart';
 
 class CartScreen extends StatefulWidget {
@@ -42,7 +43,7 @@ class _CartScreenState extends State<CartScreen> {
     final cartProvider = context.watch<CartProvider>();
     final items = cartProvider.items;
     final total = cartProvider.total;
-    final isLoading = cartProvider.isLoading;
+    final isLoading = cartProvider.state == ViewState.loading;
 
     return Scaffold(
       backgroundColor: Colors.white,

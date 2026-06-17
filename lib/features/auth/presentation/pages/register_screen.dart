@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:listo_app/core/env/environment.dart';
 
 import '../providers/auth_provider.dart';
+import '../../../../core/states/view_state.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -169,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final bool mobile = MediaQuery.of(context).size.width < 700;
-    final isLoading = context.watch<AuthProvider>().isLoading;
+    final isLoading = context.watch<AuthProvider>().state == ViewState.loading;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),

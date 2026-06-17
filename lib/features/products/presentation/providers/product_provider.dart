@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
+import '../../../../core/states/view_state.dart';
 import '../../domain/entities/product.dart';
-import '../../domain/repositories/product_repository.dart';
+import '../../domain/usecases/get_products_usecase.dart';
+import '../../domain/usecases/save_product_usecase.dart';
+import '../../domain/usecases/update_product_usecase.dart';
+import '../../domain/usecases/delete_product_usecase.dart';
 
 class ProductProvider extends ChangeNotifier {
-  final ProductRepository productRepository;
+  final GetProductsUseCase getProductsUseCase;
+  final SaveProductUseCase saveProductUseCase;
+  final UpdateProductUseCase updateProductUseCase;
+  final DeleteProductUseCase deleteProductUseCase;
 
-  ProductProvider({required this.productRepository});
+  ProductProvider({
+    required this.getProductsUseCase,
+    required this.saveProductUseCase,
+    required this.updateProductUseCase,
+    required this.deleteProductUseCase,
+  });
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  ViewState _state = ViewState.idle;
+  ViewState get state => _state;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -28,12 +40,12 @@ class ProductProvider extends ChangeNotifier {
     String search = "",
     int categoryId = 0,
   }) async {
-    _isLoading = true;
+    _state = ViewState.loading;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final result = await productRepository.getProducts(
+      final result = await getProductsUseCase(
         pageNumber: pageNumber,
         pageSize: pageSize,
         search: search,
@@ -43,27 +55,27 @@ class ProductProvider extends ChangeNotifier {
       _products = result['data'] as List<Product>;
       _totalCount = result['totalCount'] as int;
       _totalPages = result['totalPages'] as int;
-      _isLoading = false;
+      _state = ViewState.success;
       notifyListeners();
     } catch (e) {
-      _isLoading = false;
+      _state = ViewState.error;
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
     }
   }
 
   Future<bool> saveProduct(Product product) async {
-    _isLoading = true;
+    _state = ViewState.loading;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final success = await productRepository.saveProduct(product);
-      _isLoading = false;
+      final success = await saveProductUseCase(product);
+      _state = ViewState.success;
       notifyListeners();
       return success;
     } catch (e) {
-      _isLoading = false;
+      _state = ViewState.error;
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
       return false;
@@ -71,17 +83,17 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<bool> updateProduct(Product product) async {
-    _isLoading = true;
+    _state = ViewState.loading;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final success = await productRepository.updateProduct(product);
-      _isLoading = false;
+      final success = await updateProductUseCase(product);
+      _state = ViewState.success;
       notifyListeners();
       return success;
     } catch (e) {
-      _isLoading = false;
+      _state = ViewState.error;
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
       return false;
@@ -89,17 +101,17 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<bool> deleteProduct(int id) async {
-    _isLoading = true;
+    _state = ViewState.loading;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final success = await productRepository.deleteProduct(id);
-      _isLoading = false;
+      final success = await deleteProductUseCase(id);
+      _state = ViewState.success;
       notifyListeners();
       return success;
     } catch (e) {
-      _isLoading = false;
+      _state = ViewState.error;
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
       return false;

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../domain/repositories/cart_repository.dart';
+import '../../../../core/states/view_state.dart';
+import '../../domain/usecases/get_cart_usecase.dart';
 
 class CartProvider extends ChangeNotifier {
-  final CartRepository cartRepository;
+  final GetCartUseCase getCartUseCase;
 
-  CartProvider({required this.cartRepository});
+  CartProvider({required this.getCartUseCase});
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  ViewState _state = ViewState.idle;
+  ViewState get state => _state;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -20,19 +21,24 @@ class CartProvider extends ChangeNotifier {
 
   Future<void> fetchCart(int userId, {bool isPolling = false}) async {
     if (!isPolling) {
-      _isLoading = true;
+      _state = ViewState.loading;
       _errorMessage = null;
       notifyListeners();
     }
 
     try {
-      final result = await cartRepository.getCart(userId);
+      final result = await getCartUseCase(userId);
       _items = result['items'] ?? [];
       _total = (result['total'] ?? 0).toDouble();
-      if (!isPolling) _isLoading = false;
+      
+      if (!isPolling) {
+        _state = ViewState.success;
+      }
       notifyListeners();
     } catch (e) {
-      if (!isPolling) _isLoading = false;
+      if (!isPolling) {
+        _state = ViewState.error;
+      }
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
     }

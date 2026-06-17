@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
+import '../../../../core/states/view_state.dart';
 import '../providers/auth_provider.dart';
 import 'register_screen.dart';
 import '../../../../core/local_storage/storage_service.dart';
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final bool mobile = MediaQuery.of(context).size.width < 700;
-    final isLoading = context.watch<AuthProvider>().isLoading;
+    final isLoading = context.watch<AuthProvider>().state == ViewState.loading;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listo_app/core/local_storage/storage_service.dart';
-import 'package:listo_app/features/client/presentation/models/metodo_pago_model.dart';
+import 'package:listo_app/features/client/data/models/metodo_pago_model.dart';
 import '../providers/pay_provider.dart';
 
 class WalletScreen extends StatefulWidget {
