@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
@@ -14,12 +15,26 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       context.read<CartProvider>().fetchCart(widget.usuarioId);
     });
+
+    _timer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (mounted) {
+        context.read<CartProvider>().fetchCart(widget.usuarioId, isPolling: true);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override

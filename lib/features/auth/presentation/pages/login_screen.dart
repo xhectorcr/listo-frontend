@@ -59,10 +59,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
       context.go('/home');
     } else {
-      _showSnackBar(
-        authProvider.errorMessage ?? 'Credenciales incorrectas',
-        Colors.red,
-      );
+      final String msg = authProvider.errorMessage ?? 'Credenciales incorrectas';
+      if (msg.toLowerCase().contains('suspendida')) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Cuenta Suspendida', style: TextStyle(fontWeight: FontWeight.bold)),
+            content: Text(msg),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Aceptar'),
+              ),
+            ],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          ),
+        );
+      } else {
+        _showSnackBar(msg, Colors.red);
+      }
     }
   }
 

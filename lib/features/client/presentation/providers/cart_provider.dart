@@ -18,19 +18,21 @@ class CartProvider extends ChangeNotifier {
   double _total = 0.0;
   double get total => _total;
 
-  Future<void> fetchCart(int userId) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
+  Future<void> fetchCart(int userId, {bool isPolling = false}) async {
+    if (!isPolling) {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+    }
 
     try {
       final result = await cartRepository.getCart(userId);
       _items = result['items'] ?? [];
       _total = (result['total'] ?? 0).toDouble();
-      _isLoading = false;
+      if (!isPolling) _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _isLoading = false;
+      if (!isPolling) _isLoading = false;
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
     }
