@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/states/view_state.dart';
 import '../providers/cart_provider.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 
 class CartScreen extends StatefulWidget {
   final int usuarioId;
@@ -18,16 +19,26 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   Timer? _timer;
 
+  int _getUserId() {
+    final user = context.read<AuthProvider>().user;
+    if (user != null && user.id.isNotEmpty) {
+      return int.tryParse(user.id) ?? widget.usuarioId;
+    }
+    return widget.usuarioId;
+  }
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<CartProvider>().fetchCart(widget.usuarioId);
+      if (mounted) {
+        context.read<CartProvider>().fetchCart(_getUserId());
+      }
     });
 
     _timer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (mounted) {
-        context.read<CartProvider>().fetchCart(widget.usuarioId, isPolling: true);
+        context.read<CartProvider>().fetchCart(_getUserId(), isPolling: true);
       }
     });
   }
@@ -40,11 +51,6 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = context.watch<CartProvider>();
-    final items = cartProvider.items;
-    final total = cartProvider.total;
-    final isLoading = cartProvider.state == ViewState.loading;
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -59,15 +65,22 @@ class _CartScreenState extends State<CartScreen> {
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.black),
             onPressed: () {
-              context.read<CartProvider>().fetchCart(widget.usuarioId);
+              context.read<CartProvider>().fetchCart(_getUserId());
             },
           ),
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : items.isEmpty
-          ? Center(
+      body: Consumer<CartProvider>(
+        builder: (context, cartProvider, child) {
+          final isLoading = cartProvider.state == ViewState.loading;
+          final items = cartProvider.items;
+
+          if (isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (items.isEmpty) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -92,48 +105,59 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                 ],
               ),
-            )
-          : ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.inventory_2)),
-                  title: Text(item['nombre'] ?? 'Producto'),
-                  subtitle: Text('Cantidad: ${item['cantidad']}'),
-                  trailing: Text(
-                    'S/ ${item['subtotal'].toStringAsFixed(2)}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return ListTile(
+                leading: const CircleAvatar(child: Icon(Icons.inventory_2)),
+                title: Text(item['nombre'] ?? 'Producto'),
+                subtitle: Text('Cantidad: ${item['cantidad']}'),
+                trailing: Text(
+                  'S/ ${item['subtotal'].toStringAsFixed(2)}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              );
+            },
+          );
+        },
+      ),
+      bottomNavigationBar: Consumer<CartProvider>(
+        builder: (context, cartProvider, child) {
+          final items = cartProvider.items;
+          final total = cartProvider.total;
+
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: items.isEmpty
+                      ? Colors.grey.shade300
+                      : Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                );
-              },
-            ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SizedBox(
-          width: double.infinity,
-          height: 55,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: items.isEmpty
-                  ? Colors.grey.shade300
-                  : Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0,
-            ),
-            onPressed: items.isEmpty ? null : () {},
-            child: Text(
-              items.isEmpty ? 'PAGAR' : 'PAGAR S/ ${total.toStringAsFixed(2)}',
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+                  elevation: 0,
+                ),
+                onPressed: items.isEmpty ? null : () {},
+                child: Text(
+                  items.isEmpty ? 'PAGAR' : 'PAGAR S/ ${total.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

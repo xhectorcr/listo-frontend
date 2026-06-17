@@ -4,8 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/states/view_state.dart';
 import '../providers/auth_provider.dart';
-import 'register_screen.dart';
 import '../../../../core/local_storage/storage_service.dart';
+import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../../shared/widgets/primary_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -124,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 30,
                   offset: const Offset(0, 10),
                 ),
@@ -179,51 +180,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 36),
 
                 // EMAIL
-                _input(
+                CustomTextField(
                   controller: _correoController,
-                  hint: 'Correo electrónico',
-                  icon: Icons.email_outlined,
+                  hintText: 'Correo electrónico',
+                  prefixIcon: Icons.email_outlined,
+                  keyboardType: TextInputType.emailAddress,
                 ),
 
                 const SizedBox(height: 18),
 
                 // PASSWORD
-                TextField(
+                CustomTextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-
-                  decoration: InputDecoration(
-                    hintText: 'Contraseña',
-
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_rounded
-                            : Icons.visibility_rounded,
-                      ),
-                    ),
-
-                    filled: true,
-                    fillColor: const Color(0xFFF7F7F7),
-
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-
-                      borderSide: BorderSide.none,
-                    ),
-
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-
-                      borderSide: BorderSide(color: primaryColor, width: 2),
+                  hintText: 'Contraseña',
+                  prefixIcon: Icons.lock_outline_rounded,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
                     ),
                   ),
                 ),
@@ -249,42 +230,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 // LOGIN BUTTON
-                SizedBox(
-                  width: double.infinity,
-                  height: 58,
-
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : _login,
-
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      elevation: 0,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-
-                    child: isLoading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            'Ingresar',
-
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
+                PrimaryButton(
+                  onPressed: _login,
+                  text: 'Ingresar',
+                  isLoading: isLoading,
                 ),
 
                 const SizedBox(height: 28),
@@ -317,36 +266,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _input({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-  }) {
-    return TextField(
-      controller: controller,
-
-      decoration: InputDecoration(
-        hintText: hint,
-
-        prefixIcon: Icon(icon),
-
-        filled: true,
-        fillColor: const Color(0xFFF7F7F7),
-
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide.none,
-        ),
-
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-
-          borderSide: BorderSide(color: primaryColor, width: 2),
         ),
       ),
     );

@@ -47,13 +47,13 @@ class _InicioScreenState extends State<InicioScreen> {
           });
         }
       } else {
-        print("Error API status code: ${response.statusCode} - body: ${response.body}");
+        debugPrint("Error API status code: ${response.statusCode} - body: ${response.body}");
         setState(() {
           _pin = "Error API";
         });
       }
     } catch (e) {
-      print("Excepción al pedir el PIN: $e");
+      debugPrint("Excepción al pedir el PIN: $e");
       setState(() {
         _pin = "Error de red";
       });

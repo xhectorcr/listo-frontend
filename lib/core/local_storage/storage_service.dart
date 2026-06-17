@@ -45,4 +45,16 @@ class StorageService {
     await prefs.remove(_userKey);
     await prefs.remove(_roleKey);
   }
+
+  Future<String> getOrCreateDeviceId() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? deviceId = prefs.getString('device_id');
+    if (deviceId == null) {
+      // Usamos dart:math para generar un UUID simple sin añadir dependencias externas
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      deviceId = 'device_$timestamp';
+      await prefs.setString('device_id', deviceId);
+    }
+    return deviceId;
+  }
 }

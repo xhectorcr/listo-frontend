@@ -46,10 +46,7 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Future<void> _agregarMetodoPago() async {
-    if (!_formKey.currentState!.validate()) return;
-  
-  final storage = StorageService();
-  final idString = await storage.getId();
+  if (!_formKey.currentState!.validate()) return;
 
   String numeroTarjeta = _numeroTarjetaController.text;
   String ultimos = numeroTarjeta.length >= 4 

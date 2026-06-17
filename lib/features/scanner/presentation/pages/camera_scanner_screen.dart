@@ -108,7 +108,7 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
         _log('Error procesando mensaje WS: $e');
       }
     }, onError: (error) {
-      print("Error WebSocket: $error");
+      // _log ya imprime localmente en debug (lo eliminaremos de producción)
       _log('Error WebSocket: $error');
       setState(() => _status = 'Error de conexión: ${wsUrl.toString()}');
     });
@@ -120,8 +120,8 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
     final ts = DateTime.now().toIso8601String();
     _logs.insert(0, '[$ts] $msg');
     if (_logs.length > 50) _logs.removeLast();
-    // además print para ver en consola
-    print(msg);
+    // Además logear en consola de depuración en desarrollo
+    debugPrint(msg);
   }
 
   @override
@@ -215,7 +215,7 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
                   if (_detectedProducts.isEmpty)
                     const Text('Ninguno', style: TextStyle(color: Colors.white))
                   else
-                    ..._detectedProducts.take(5).map((p) => Text('- $p', style: const TextStyle(color: Colors.white))).toList(),
+                    ..._detectedProducts.take(5).map((p) => Text('- $p', style: const TextStyle(color: Colors.white))),
                 ],
               ),
             ),

@@ -1,12 +1,15 @@
 import 'dart:convert';
-import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:listo_app/core/env/environment.dart';
 
+import '../../../../core/local_storage/storage_service.dart';
+import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../../shared/widgets/primary_button.dart';
 import '../providers/auth_provider.dart';
 import '../../../../core/states/view_state.dart';
 
@@ -29,17 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final Color primaryColor = const Color(0xFFFF5A1F);
 
-  Future<String> _getOrCreateDeviceId() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? deviceId = prefs.getString('device_id');
-    if (deviceId == null) {
-      final random = Random.secure();
-      final values = List<int>.generate(16, (i) => random.nextInt(256));
-      deviceId = values.map((e) => e.toRadixString(16).padLeft(2, '0')).join();
-      await prefs.setString('device_id', deviceId);
-    }
-    return deviceId;
-  }
+
 
   Future<void> _buscarDni(String dni) async {
     if (dni.length != 8) {
@@ -52,7 +45,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      final deviceId = await _getOrCreateDeviceId();
+      final storage = StorageService();
+      final deviceId = await storage.getOrCreateDeviceId();
 
       final response = await http.get(
         Uri.parse('${Environment.apiUrl}/usuario/dni/$dni'),
@@ -199,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 30,
                   offset: const Offset(0, 10),
                 ),
@@ -267,11 +261,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 34),
 
                 // NAME
-                _input(
+                CustomTextField(
                   controller: _nombreController,
-                  hint: 'Nombre completo',
-                  icon: Icons.person_outline_rounded,
-                  textCapitalization: TextCapitalization.words,
+                  hintText: 'Nombre completo',
+                  prefixIcon: Icons.person_outline_rounded,
                 ),
 
                 const SizedBox(height: 18),
@@ -325,66 +318,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 18),
 
                 // EMAIL
-                _input(
+                CustomTextField(
                   controller: _correoController,
-                  hint: 'Correo electrónico',
-                  icon: Icons.email_outlined,
+                  hintText: 'Correo electrónico',
+                  prefixIcon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
                 ),
 
                 const SizedBox(height: 18),
 
                 // PHONE
-                _input(
+                CustomTextField(
                   controller: _telefonoController,
-                  hint: 'Teléfono',
-                  icon: Icons.phone_outlined,
+                  hintText: 'Teléfono',
+                  prefixIcon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
                 ),
 
                 const SizedBox(height: 18),
 
                 // PASSWORD
-                TextField(
+                CustomTextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (_) {
-                    if (!isLoading) _registrar();
-                  },
-
-                  decoration: InputDecoration(
-                    hintText: 'Contraseña',
-
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_rounded
-                            : Icons.visibility_rounded,
-                      ),
-                    ),
-
-                    filled: true,
-                    fillColor: const Color(0xFFF7F7F7),
-
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-
-                      borderSide: BorderSide.none,
-                    ),
-
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-
-                      borderSide: BorderSide(color: primaryColor, width: 2),
+                  hintText: 'Contraseña',
+                  prefixIcon: Icons.lock_outline_rounded,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
                     ),
                   ),
                 ),
@@ -392,42 +360,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 30),
 
                 // BUTTON
-                SizedBox(
-                  width: double.infinity,
-                  height: 58,
-
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : _registrar,
-
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      elevation: 0,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-
-                    child: isLoading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            'Crear cuenta',
-
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
+                PrimaryButton(
+                  onPressed: _registrar,
+                  text: 'Crear cuenta',
+                  isLoading: isLoading,
                 ),
 
                 const SizedBox(height: 24),
@@ -464,41 +400,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _input({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    TextInputType? keyboardType,
-    TextCapitalization textCapitalization = TextCapitalization.none,
-  }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      textCapitalization: textCapitalization,
-      textInputAction: TextInputAction.next,
-
-      decoration: InputDecoration(
-        hintText: hint,
-
-        prefixIcon: Icon(icon),
-
-        filled: true,
-        fillColor: const Color(0xFFF7F7F7),
-
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide.none,
-        ),
-
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-
-          borderSide: BorderSide(color: primaryColor, width: 2),
         ),
       ),
     );
