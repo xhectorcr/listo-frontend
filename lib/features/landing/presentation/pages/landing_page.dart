@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/gestures.dart';
+import 'dart:html' as html;
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -428,10 +430,10 @@ class LandingPage extends StatelessWidget {
         runSpacing: 25,
         alignment: WrapAlignment.center,
         children: [
-          _stepCard("1", "Escanea QR", Icons.qr_code_scanner),
-          _stepCard("2", "Entra a tienda", Icons.store),
-          _stepCard("3", "Toma productos", Icons.shopping_bag),
-          _stepCard("4", "Sal automáticamente", Icons.exit_to_app),
+          _stepCard("1", "Regístrate y Recarga","Crea tu cuenta aquí y recarga tu tarjeta virtual", Icons.account_balance_wallet),
+          _stepCard("2", "Genera tu PIN","Presiona Inicio en tu app e ingresa el código en la pantalla exterior", Icons.pin),
+          _stepCard("3", "Elige tus productos","Entra a la tienda y selecciona lo que deseas llevar", Icons.shopping_bag),
+          _stepCard("4", "Paga y Listo","Confirma el pago en la pantalla y retírate sin hacer filas", Icons.exit_to_app),
         ],
       ),
     );
@@ -673,7 +675,7 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  Widget _stepCard(String step, String title, IconData icon) {
+  Widget _stepCard(String step, String title,String description, IconData icon) {
     return Container(
       width: 240,
       padding: const EdgeInsets.all(28),
@@ -705,6 +707,49 @@ class LandingPage extends StatelessWidget {
               color: Colors.white,
               fontWeight: FontWeight.w700,
               fontSize: 18,
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          //control del enlace clickable
+          description == "Crea tu cuenta aquí y recarga tu tarjeta virtual"
+          ? RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(
+                color: Colors.grey[400],
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                fontFamily: 'sans-serif'
+              ),
+              children: [
+                    const TextSpan(text: "Crea tu cuenta "),
+                    TextSpan(
+                      text: "aquí",
+                      style: TextStyle(
+                        color: primaryColor, // Tu color naranja de Listo Go
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline, // Te lo subraya como enlace
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          html.window.location.hash = '/login';
+                        },
+                    ),
+                    const TextSpan(text: " y recarga tu tarjeta virtual"),
+
+              ],
+            ),
+          )
+
+          : Text(
+            description,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
             ),
           ),
         ],
