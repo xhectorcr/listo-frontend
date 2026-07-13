@@ -5,8 +5,12 @@ import 'package:provider/provider.dart';
 import '../../../../core/states/view_state.dart';
 import '../providers/auth_provider.dart';
 import '../../../../core/local_storage/storage_service.dart';
-import '../../../../shared/widgets/custom_text_field.dart';
-import '../../../../shared/widgets/primary_button.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../widgets/app_button.dart';
+import '../../../../widgets/app_textfield.dart';
+import '../../../../widgets/app_card.dart';
+import '../../../../widgets/app_container.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,8 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final StorageService _storageService = StorageService();
 
   bool _obscurePassword = true;
-
-  final Color primaryColor = const Color(0xFFFF5A1F);
 
   Future<void> _login() async {
     FocusScope.of(context).unfocus();
@@ -106,31 +108,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final isLoading = context.watch<AuthProvider>().state == ViewState.loading;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.background,
 
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-
-          child: Container(
-            width: double.infinity,
-
-            constraints: const BoxConstraints(maxWidth: 430),
-
+          child: AppContainer(
+            maxWidth: 500,
+            backgroundColor: Colors.transparent,
+            padding: const EdgeInsets.all(24),
+            child: AppCard(
+              margin: EdgeInsets.symmetric(horizontal: mobile ? 0 : 20),
             padding: EdgeInsets.all(mobile ? 28 : 36),
-
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(28),
-
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 30,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
 
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -142,17 +130,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 75,
 
                   decoration: BoxDecoration(
-                    color: primaryColor,
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(22),
                   ),
 
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       'L!',
-                      style: TextStyle(
-                        fontSize: 30,
+                      style: AppTextStyles.headlineLarge.copyWith(
+                        color: AppColors.textInverse,
                         fontWeight: FontWeight.w900,
-                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -161,12 +148,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 28),
 
                 // TITLE
-                const Text(
+                Text(
                   'Iniciar sesión',
-                  style: TextStyle(
-                    fontSize: 30,
+                  style: AppTextStyles.headlineMedium.copyWith(
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF111111),
                   ),
                 ),
 
@@ -174,27 +159,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 Text(
                   'Ingresa para continuar',
-                  style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
+                  style: AppTextStyles.bodyLarge,
                 ),
 
                 const SizedBox(height: 36),
 
                 // EMAIL
-                CustomTextField(
+                AppTextField(
                   controller: _correoController,
-                  hintText: 'Correo electrónico',
-                  prefixIcon: Icons.email_outlined,
+                  label: 'Correo electrónico',
+                  prefixIcon: const Icon(Icons.email_outlined),
                   keyboardType: TextInputType.emailAddress,
                 ),
 
                 const SizedBox(height: 18),
 
                 // PASSWORD
-                CustomTextField(
+                AppTextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  hintText: 'Contraseña',
-                  prefixIcon: Icons.lock_outline_rounded,
+                  label: 'Contraseña',
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -219,9 +204,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     child: Text(
                       '¿Olvidaste tu contraseña?',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w600,
+                      style: AppTextStyles.labelLarge.copyWith(
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -230,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 // LOGIN BUTTON
-                PrimaryButton(
+                AppButton(
                   onPressed: _login,
                   text: 'Ingresar',
                   isLoading: isLoading,
@@ -245,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Text(
                       '¿No tienes cuenta?',
-                      style: TextStyle(color: Colors.grey.shade700),
+                      style: AppTextStyles.bodyMedium,
                     ),
 
                     TextButton(
@@ -255,15 +239,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       child: Text(
                         'Crear cuenta',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.w700,
+                        style: AppTextStyles.labelLarge.copyWith(
+                          color: AppColors.primary,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

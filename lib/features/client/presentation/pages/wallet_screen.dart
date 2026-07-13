@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:listo_app/core/local_storage/storage_service.dart';
 import 'package:listo_app/features/client/data/models/metodo_pago_model.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../theme/app_spacing.dart';
+import '../../../../widgets/app_button.dart';
+import '../../../../widgets/app_card.dart';
+import '../../../../widgets/app_textfield.dart';
+import '../../../../widgets/app_dialog.dart';
+import '../../../../widgets/app_container.dart';
 import '../providers/pay_provider.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -114,18 +122,18 @@ class _WalletScreenState extends State<WalletScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Añadir Tarjeta', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 20),
-              TextFormField(controller: _usuarioController, decoration: const InputDecoration(labelText: 'Titular', border: OutlineInputBorder()), validator: (v) => v!.isEmpty ? 'Requerido' : null),
-              const SizedBox(height: 10),
-              TextFormField(controller: _marcaController, decoration: const InputDecoration(labelText: 'Marca (Visa/MC)', border: OutlineInputBorder()), validator: (v) => v!.isEmpty ? 'Requerido' : null),
-              const SizedBox(height: 10),
-              TextFormField(controller: _numeroTarjetaController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Número de tarjeta', border: OutlineInputBorder()), validator: (v) => v!.length < 16 ? 'Mínimo 16 dígitos' : null),
-              const SizedBox(height: 10),
-              TextFormField(controller: _cvvController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'CVV', border: OutlineInputBorder()), validator: (v) => v!.length < 3 ? 'Inválido' : null),
-              const SizedBox(height: 20),
-              ElevatedButton(onPressed: _agregarMetodoPago, child: const Text('Guardar Tarjeta')),
-              const SizedBox(height: 20),
+              Text('Añadir Tarjeta', style: AppTextStyles.titleLarge),
+              const SizedBox(height: AppSpacing.md),
+              AppTextField(controller: _usuarioController, label: 'Titular', validator: (v) => v!.isEmpty ? 'Requerido' : null),
+              const SizedBox(height: AppSpacing.sm),
+              AppTextField(controller: _marcaController, label: 'Marca (Visa/MC)', validator: (v) => v!.isEmpty ? 'Requerido' : null),
+              const SizedBox(height: AppSpacing.sm),
+              AppTextField(controller: _numeroTarjetaController, keyboardType: TextInputType.number, label: 'Número de tarjeta', validator: (v) => v!.length < 16 ? 'Mínimo 16 dígitos' : null),
+              const SizedBox(height: AppSpacing.sm),
+              AppTextField(controller: _cvvController, keyboardType: TextInputType.number, label: 'CVV', validator: (v) => v!.length < 3 ? 'Inválido' : null),
+              const SizedBox(height: AppSpacing.lg),
+              AppButton(onPressed: _agregarMetodoPago, text: 'Guardar Tarjeta'),
+              const SizedBox(height: AppSpacing.xxl),
             ],
           ),
         ),
@@ -134,41 +142,30 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   void _mostrarDialogoEliminar() {
-    showDialog(
+    AppDialog.show(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('¿Eliminar tarjeta?'),
-          content: const Text('Perderás el acceso a tu saldo actual. Esta acción no se puede deshacer.'),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              onPressed: _eliminarMetodoPago,
-              child: const Text('Sí, eliminar', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
+      title: '¿Eliminar tarjeta?',
+      content: 'Perderás el acceso a tu saldo actual. Esta acción no se puede deshacer.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      onConfirm: _eliminarMetodoPago,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
+    return AppContainer(
+      maxWidth: 1000,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+          Text(
             'Mi Billetera',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: AppTextStyles.headlineSmall,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.md),
 
           FutureBuilder<MetodoPagoModel?>(
             future: _billeteraFuture,
@@ -194,13 +191,13 @@ class _WalletScreenState extends State<WalletScreen> {
             },
           ),
 
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxl),
 
-          const Text(
+          Text(
             'Movimientos y Acciones',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: AppTextStyles.titleLarge,
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -214,24 +211,18 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   // --- WIDGETS PRIVADOS ---
 
   Widget _buildActiveWalletCard(MetodoPagoModel billetera) {
     final saldoFormateado = billetera.saldo.toStringAsFixed(2);
 
-    return Container(
-      width: double.infinity,
+    return AppCard(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2C2C2C),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 15, offset: const Offset(0, 8)),
-        ],
-      ),
+      backgroundColor: const Color(0xFF2C2C2C),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -241,10 +232,10 @@ class _WalletScreenState extends State<WalletScreen> {
               Row(
                 children: [
                   const Icon(Icons.credit_card, color: Colors.white54, size: 24),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     billetera.marcaTarjeta.isNotEmpty ? billetera.marcaTarjeta : 'LISTO! Card',
-                    style: const TextStyle(color: Colors.white54, fontSize: 16),
+                    style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textInverse.withOpacity(0.54)),
                   ),
                 ],
               ),
@@ -257,29 +248,29 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          const Text('Saldo disponible', style: TextStyle(color: Colors.white54, fontSize: 14)),
-          const SizedBox(height: 5),
+          const SizedBox(height: AppSpacing.md),
+          Text('Saldo disponible', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textInverse.withOpacity(0.54))),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'S/ $saldoFormateado',
-            style: const TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
+            style: AppTextStyles.displaySmall.copyWith(color: AppColors.textInverse, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: AppSpacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('TITULAR', style: TextStyle(color: Colors.white54, fontSize: 12)),
-                  Text(billetera.usuario, style: const TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('TITULAR', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textInverse.withOpacity(0.54))),
+                  Text(billetera.usuario, style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textInverse)),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Text('CARD', style: TextStyle(color: Colors.white54, fontSize: 12)),
-                  Text('•••• ${billetera.ultimosDigitos}', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('CARD', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textInverse.withOpacity(0.54))),
+                  Text('•••• ${billetera.ultimosDigitos}', style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textInverse)),
                 ],
               ),
             ],
@@ -290,37 +281,27 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _buildEmptyWalletCard() {
-    return Container(
-      width: double.infinity,
+    return AppCard(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
+      backgroundColor: AppColors.background,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.account_balance_wallet_outlined, size: 50, color: Colors.grey),
-          const SizedBox(height: 15),
-          const Text('Aún no tienes una billetera', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          const Text(
+          const Icon(Icons.account_balance_wallet_outlined, size: 50, color: AppColors.textDisabled),
+          const SizedBox(height: AppSpacing.md),
+          Text('Aún no tienes una billetera', style: AppTextStyles.titleLarge),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
             'Agrega un método de pago para empezar a disfrutar de los beneficios.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black54, fontSize: 14),
+            style: AppTextStyles.bodyMedium,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg),
           // NUEVO: Botón para abrir el modal
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
+          AppButton(
+            text: 'Añadir Tarjeta',
+            icon: Icons.add,
             onPressed: _mostrarModalAgregar,
-            icon: const Icon(Icons.add),
-            label: const Text('Añadir Tarjeta'),
           ),
         ],
       ),
@@ -328,34 +309,24 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _buildErrorCard(String error) {
-    return Container(
-      width: double.infinity,
+    return AppCard(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.red.shade50,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.red.shade200),
-      ),
+      backgroundColor: Colors.red.shade50,
       child: Column(
         children: [
-          const Icon(Icons.error_outline, color: Colors.red, size: 40),
-          const SizedBox(height: 10),
-          const Text('No pudimos cargar tu billetera', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 5),
-          Text(error, textAlign: TextAlign.center, style: const TextStyle(color: Colors.redAccent, fontSize: 12)),
+          const Icon(Icons.error_outline, color: AppColors.error, size: 40),
+          const SizedBox(height: AppSpacing.sm),
+          Text('No pudimos cargar tu billetera', style: AppTextStyles.titleSmall.copyWith(color: AppColors.error)),
+          const SizedBox(height: AppSpacing.xs),
+          Text(error, textAlign: TextAlign.center, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error)),
         ],
       ),
     );
   }
 
   Widget _actionCard(IconData icon, String title, String subtitle, Color bgColor, Color iconColor) {
-    return Container(
+    return AppCard(
       padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -364,9 +335,9 @@ class _WalletScreenState extends State<WalletScreen> {
             decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
             child: Icon(icon, color: iconColor, size: 28),
           ),
-          const SizedBox(height: 15),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+          const SizedBox(height: AppSpacing.md),
+          Text(title, style: AppTextStyles.titleMedium),
+          Text(subtitle, style: AppTextStyles.bodySmall),
         ],
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'routes/app_router.dart';
-import 'core/constants/app_colors.dart';
+import 'theme/app_theme.dart';
 import 'core/injection/injection_container.dart' as di;
 import 'package:provider/provider.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
@@ -31,11 +31,19 @@ class ClienteApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'LISTO! GO',
-      theme: ThemeData(
-        primaryColor: AppColors.primary,
-        fontFamily: 'Roboto',
-      ),
+      theme: AppTheme.getTheme(),
       routerConfig: appRouter,
+      builder: (context, child) {
+        final mediaQueryData = MediaQuery.of(context);
+        final isDesktop = mediaQueryData.size.width > 800;
+        final scale = isDesktop ? 1.25 : 1.0;
+        return MediaQuery(
+          data: mediaQueryData.copyWith(
+            textScaler: TextScaler.linear(scale),
+          ),
+          child: child!,
+        );
+      },
     );
   }
 }

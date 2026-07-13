@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/env/environment.dart';
 import '../../../../core/local_storage/storage_service.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../theme/app_spacing.dart';
+import '../../../../widgets/app_card.dart';
+import '../../../../widgets/app_chip.dart';
+import '../../../../widgets/app_container.dart';
 
 class InicioScreen extends StatefulWidget {
   const InicioScreen({super.key});
@@ -26,6 +32,7 @@ class _InicioScreenState extends State<InicioScreen> {
       final String? userId = await storage.getId();
 
       if (userId == null) {
+        if (!mounted) return;
         setState(() {
           _pin = "Error: Sin Sesión";
         });
@@ -38,22 +45,26 @@ class _InicioScreenState extends State<InicioScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true && data['data'] != null) {
+          if (!mounted) return;
           setState(() {
             _pin = data['data'].toString();
           });
         } else {
+          if (!mounted) return;
           setState(() {
             _pin = "Error";
           });
         }
       } else {
         debugPrint("Error API status code: ${response.statusCode} - body: ${response.body}");
+        if (!mounted) return;
         setState(() {
           _pin = "Error API";
         });
       }
     } catch (e) {
       debugPrint("Excepción al pedir el PIN: $e");
+      if (!mounted) return;
       setState(() {
         _pin = "Error de red";
       });
@@ -62,56 +73,33 @@ class _InicioScreenState extends State<InicioScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Ingresa este código\npara entrar a la tienda',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+    return AppContainer(
+      maxWidth: 800,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Ingresa este código\npara entrar a la tienda',
+              style: AppTextStyles.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.xxl),
+            AppCard(
+              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
+              child: Text(
+                _pin,
+                style: AppTextStyles.displayMedium.copyWith(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 8,
+                  color: AppColors.primary,
                 ),
-              ],
-            ),
-            child: Text(
-              _pin,
-              style: const TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 8,
-                color: Color(0xFFFF5A1F),
               ),
             ),
-          ),
-          const SizedBox(height: 30),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Text(
-              'Código único temporal',
-              style: TextStyle(
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ],
+            const SizedBox(height: AppSpacing.xl),
+            AppChip(label: 'Código único temporal'),
+          ],
+        ),
       ),
     );
   }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../widgets/app_appbar.dart';
 import 'inicio_screen.dart';
 import 'wallet_screen.dart';
 import 'cart_screen.dart';
 import 'history_screen.dart';
-import 'profile_screen.dart'; // 1. IMPORTAMOS LA NUEVA PANTALLA
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,40 +29,30 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFF5A1F),
-                shape: BoxShape.circle,
-              ),
-              child: const Text(
+      backgroundColor: AppColors.background,
+      appBar: AppAppBar(
+        title: 'LISTO! GO',
+        leading: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
                 'L!',
-                style: TextStyle(
-                  color: Colors.white,
+                style: AppTextStyles.labelLarge.copyWith(
+                  color: AppColors.textInverse,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(width: 10),
-            const Text(
-              'LISTO! GO',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ],
+          ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_outline, color: Colors.black),
+            icon: const Icon(Icons.person_outline, color: AppColors.textPrimary),
             onPressed: () {
               Navigator.push(
                 context,
@@ -72,8 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFFFF5A1F),
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textDisabled,
+        backgroundColor: AppColors.surface,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {

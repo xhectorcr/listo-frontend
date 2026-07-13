@@ -1,204 +1,178 @@
 import 'package:flutter/material.dart';
-
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../theme/app_radius.dart';
+import '../../../../theme/app_shadows.dart';
 class LandingStyles {
   // =========================
   // COLORS
   // =========================
-  static const Color primaryColor = Color(0xFFFF5A1F);
-  static const Color scaffoldBackground = Color(0xFFF8F9FA);
-  static const Color darkBackground = Color(0xFF111111);
-  static const Color stepCardBackground = Color(0xFF1A1A1A);
-  static const Color locationCardBackground = Color(0xFF1A1A1A);
+  static const Color primaryColor = AppColors.primary;
+  static const Color scaffoldBackground = AppColors.background;
+  static const Color darkBackground = AppColors.textPrimary;
+  static const Color stepCardBackground = AppColors.surface;
+  static const Color locationCardBackground = AppColors.surface;
 
   // =========================
   // TEXT STYLES
   // =========================
   
   // Navbar
-  static const TextStyle logoTextStyle = TextStyle(
-    color: Colors.white,
+  static TextStyle logoTextStyle = AppTextStyles.titleLarge.copyWith(
+    color: AppColors.textInverse,
     fontWeight: FontWeight.w800,
-    fontSize: 20,
   );
-  static const TextStyle brandTextStyle = TextStyle(
-    color: Colors.black,
-    fontSize: 24,
+  static TextStyle brandTextStyle = AppTextStyles.headlineSmall.copyWith(
+    color: AppColors.textPrimary,
     fontWeight: FontWeight.w800,
     letterSpacing: 1,
   );
-  static const TextStyle loginButtonTextStyle = TextStyle(
-    color: Colors.black87,
+  static TextStyle loginButtonTextStyle = AppTextStyles.labelLarge.copyWith(
+    color: AppColors.textPrimary,
     fontWeight: FontWeight.w700,
-    fontSize: 16,
   );
 
   // Hero Section
-  static const TextStyle heroBadgeTextStyle = TextStyle(
+  static TextStyle heroBadgeTextStyle = AppTextStyles.labelMedium.copyWith(
     color: primaryColor,
     fontWeight: FontWeight.w700,
     letterSpacing: 1,
-    fontSize: 12,
   );
-  static TextStyle heroTitleMobileStyle = const TextStyle(
-    fontSize: 38,
+  static TextStyle heroTitleMobileStyle = AppTextStyles.displaySmall.copyWith(
     height: 1.05,
     fontWeight: FontWeight.w900,
-    color: Color(0xFF111111),
+    color: AppColors.textPrimary,
   );
-  static TextStyle heroTitleDesktopStyle = const TextStyle(
-    fontSize: 64,
+  static TextStyle heroTitleDesktopStyle = AppTextStyles.displayLarge.copyWith(
     height: 1.05,
     fontWeight: FontWeight.w900,
-    color: Color(0xFF111111),
+    color: AppColors.textPrimary,
   );
-  static TextStyle heroDescMobileStyle = TextStyle(
-    fontSize: 16,
+  static TextStyle heroDescMobileStyle = AppTextStyles.bodyLarge.copyWith(
     height: 1.7,
-    color: Colors.grey.shade700,
+    color: AppColors.textSecondary,
   );
-  static TextStyle heroDescDesktopStyle = TextStyle(
-    fontSize: 18,
+  static TextStyle heroDescDesktopStyle = AppTextStyles.titleMedium.copyWith(
     height: 1.7,
-    color: Colors.grey.shade700,
+    color: AppColors.textSecondary,
+    fontWeight: FontWeight.normal,
   );
-  static const TextStyle heroButtonTextStyle = TextStyle(
-    fontSize: 15,
+  static TextStyle heroButtonTextStyle = AppTextStyles.labelLarge.copyWith(
     fontWeight: FontWeight.bold,
   );
   
   // Stats
-  static const TextStyle heroStatValueStyle = TextStyle(
-    fontSize: 26,
+  static TextStyle heroStatValueStyle = AppTextStyles.headlineMedium.copyWith(
     fontWeight: FontWeight.w900,
-    color: Color(0xFF111111),
+    color: AppColors.textPrimary,
   );
-  static TextStyle heroStatLabelStyle = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: Colors.grey.shade700,
+  static TextStyle heroStatLabelStyle = AppTextStyles.labelMedium.copyWith(
+    color: AppColors.textSecondary,
   );
 
   // Section Wrapper
-  static TextStyle sectionTitleDarkStyle = const TextStyle(
-    color: Colors.white,
-    fontSize: 42,
+  static TextStyle sectionTitleDarkStyle = AppTextStyles.displaySmall.copyWith(
+    color: AppColors.textInverse,
     fontWeight: FontWeight.w800,
   );
-  static TextStyle sectionTitleLightStyle = const TextStyle(
-    color: Colors.black,
-    fontSize: 42,
+  static TextStyle sectionTitleLightStyle = AppTextStyles.displaySmall.copyWith(
+    color: AppColors.textPrimary,
     fontWeight: FontWeight.w800,
   );
-  static TextStyle sectionSubtitleDarkStyle = TextStyle(
-    color: Colors.grey.shade400,
-    fontSize: 18,
+  static TextStyle sectionSubtitleDarkStyle = AppTextStyles.titleMedium.copyWith(
+    color: AppColors.textDisabled,
+    fontWeight: FontWeight.normal,
   );
-  static TextStyle sectionSubtitleLightStyle = TextStyle(
-    color: Colors.grey.shade700,
-    fontSize: 18,
+  static TextStyle sectionSubtitleLightStyle = AppTextStyles.titleMedium.copyWith(
+    color: AppColors.textSecondary,
+    fontWeight: FontWeight.normal,
   );
 
   // Benefit Card
-  static const TextStyle benefitCardTitleStyle = TextStyle(
-    fontWeight: FontWeight.w700, 
-    fontSize: 18,
+  static TextStyle benefitCardTitleStyle = AppTextStyles.titleLarge.copyWith(
+    fontWeight: FontWeight.w700,
   );
 
   // Step Card
-  static const TextStyle stepCardStepStyle = TextStyle(
+  static TextStyle stepCardStepStyle = AppTextStyles.headlineLarge.copyWith(
     color: primaryColor,
-    fontSize: 30,
     fontWeight: FontWeight.w800,
   );
-  static const TextStyle stepCardTitleStyle = TextStyle(
-    color: Colors.white,
+  static TextStyle stepCardTitleStyle = AppTextStyles.titleLarge.copyWith(
+    color: AppColors.textPrimary,
     fontWeight: FontWeight.w700,
-    fontSize: 18,
   );
-  static const TextStyle stepCardDescStyle = TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
+  static TextStyle stepCardDescStyle = AppTextStyles.bodyMedium.copyWith(
+    color: AppColors.textSecondary,
   );
-  static TextStyle stepCardRichDescStyle = TextStyle(
-    color: Colors.grey[400],
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-    fontFamily: 'sans-serif'
+  static TextStyle stepCardRichDescStyle = AppTextStyles.bodyMedium.copyWith(
+    color: AppColors.textSecondary,
   );
-  static const TextStyle stepCardLinkStyle = TextStyle(
+  static TextStyle stepCardLinkStyle = AppTextStyles.bodyMedium.copyWith(
     color: primaryColor,
     fontWeight: FontWeight.bold,
     decoration: TextDecoration.underline,
   );
 
   // Product Card
-  static const TextStyle productCardTitleStyle = TextStyle(
-    fontWeight: FontWeight.w700, 
-    fontSize: 18,
+  static TextStyle productCardTitleStyle = AppTextStyles.titleLarge.copyWith(
+    fontWeight: FontWeight.w700,
   );
-  static const TextStyle productCardPriceStyle = TextStyle(
+  static TextStyle productCardPriceStyle = AppTextStyles.titleLarge.copyWith(
     color: primaryColor,
     fontWeight: FontWeight.bold,
-    fontSize: 20,
   );
 
   // Discount Card
-  static const TextStyle discountCardTitleStyle = TextStyle(
-    color: Colors.white,
+  static TextStyle discountCardTitleStyle = AppTextStyles.headlineMedium.copyWith(
+    color: AppColors.textInverse,
     fontWeight: FontWeight.w800,
-    fontSize: 28,
   );
-  static const TextStyle discountCardDescStyle = TextStyle(
-    color: Colors.white, 
-    fontSize: 17,
+  static TextStyle discountCardDescStyle = AppTextStyles.titleMedium.copyWith(
+    color: AppColors.textInverse,
+    fontWeight: FontWeight.normal,
   );
 
   // Tech Chip
-  static const TextStyle techChipStyle = TextStyle(
-    color: Colors.white,
+  static TextStyle techChipStyle = AppTextStyles.labelMedium.copyWith(
+    color: AppColors.textInverse,
     fontWeight: FontWeight.w600,
   );
 
   // Big Stat
-  static const TextStyle bigStatValueStyle = TextStyle(
+  static TextStyle bigStatValueStyle = AppTextStyles.displayMedium.copyWith(
     color: primaryColor,
-    fontSize: 52,
     fontWeight: FontWeight.w800,
   );
-  static TextStyle bigStatLabelStyle = TextStyle(
-    color: Colors.grey.shade700, 
-    fontSize: 16,
+  static TextStyle bigStatLabelStyle = AppTextStyles.titleMedium.copyWith(
+    color: AppColors.textSecondary,
   );
 
   // Location Card
-  static const TextStyle locationCardCityStyle = TextStyle(
-    color: Colors.white,
+  static TextStyle locationCardCityStyle = AppTextStyles.titleLarge.copyWith(
+    color: AppColors.textPrimary,
     fontWeight: FontWeight.w700,
-    fontSize: 22,
   );
 
   // Stat Item
-  static const TextStyle statItemValueStyle = TextStyle(
+  static TextStyle statItemValueStyle = AppTextStyles.headlineLarge.copyWith(
     color: primaryColor,
     fontWeight: FontWeight.w800,
-    fontSize: 32,
   );
-  static TextStyle statItemLabelStyle = TextStyle(
-    color: Colors.grey.shade700,
+  static TextStyle statItemLabelStyle = AppTextStyles.bodyMedium.copyWith(
+    color: AppColors.textSecondary,
   );
 
   // Footer
-  static const TextStyle footerLogoStyle = TextStyle(
-    color: Colors.white,
+  static TextStyle footerLogoStyle = AppTextStyles.headlineMedium.copyWith(
+    color: AppColors.textInverse,
     fontWeight: FontWeight.w800,
-    fontSize: 30,
   );
-  static TextStyle footerSubtitleStyle = TextStyle(
-    color: Colors.grey.shade500,
+  static TextStyle footerSubtitleStyle = AppTextStyles.bodyMedium.copyWith(
+    color: AppColors.textDisabled,
   );
-  static TextStyle footerItemStyle = TextStyle(
-    color: Colors.grey.shade400,
+  static TextStyle footerItemStyle = AppTextStyles.bodyMedium.copyWith(
+    color: AppColors.textDisabled,
   );
 
   // =========================
@@ -207,12 +181,12 @@ class LandingStyles {
   
   static BoxDecoration navbarLogoDecoration = BoxDecoration(
     color: primaryColor,
-    borderRadius: BorderRadius.circular(14),
+    borderRadius: AppRadius.mediumRadius,
   );
 
   static BoxDecoration navbarBlurBorderDecoration = BoxDecoration(
     border: Border(
-      bottom: BorderSide(color: Colors.black.withOpacity(0.05)),
+      bottom: BorderSide(color: AppColors.border),
     ),
   );
 
@@ -220,13 +194,13 @@ class LandingStyles {
     gradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [Color(0xFFFFFFFF), Color(0xFFFFF4EF)],
+      colors: [AppColors.surface, AppColors.background],
     ),
   );
 
   static BoxDecoration heroBadgeDecoration = BoxDecoration(
     color: primaryColor.withOpacity(0.1),
-    borderRadius: BorderRadius.circular(100),
+    borderRadius: AppRadius.circularRadius,
   );
 
   static BoxDecoration heroImageBackgroundDecoration = BoxDecoration(
@@ -240,66 +214,49 @@ class LandingStyles {
   );
 
   static BoxDecoration heroImageFallbackDecoration = BoxDecoration(
-    color: Colors.grey.shade200,
+    color: AppColors.disabled,
     borderRadius: BorderRadius.circular(35),
   );
 
   static BoxDecoration heroStatDecoration = BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(20),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.05),
-        blurRadius: 18,
-        offset: const Offset(0, 8),
-      ),
-    ],
+    color: AppColors.surface,
+    borderRadius: AppRadius.extraLargeRadius,
+    boxShadow: AppShadows.large,
   );
 
   static BoxDecoration benefitCardDecoration = BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(25),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.05),
-        blurRadius: 25,
-        offset: const Offset(0, 15),
-      ),
-    ],
+    color: AppColors.surface,
+    borderRadius: AppRadius.extraLargeRadius,
+    boxShadow: AppShadows.large,
   );
 
   static BoxDecoration stepCardDecoration = BoxDecoration(
     color: stepCardBackground,
-    borderRadius: BorderRadius.circular(25),
+    borderRadius: AppRadius.extraLargeRadius,
+    boxShadow: AppShadows.small,
   );
 
   static BoxDecoration productCardDecoration = BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(24),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.05),
-        blurRadius: 25,
-        offset: const Offset(0, 15),
-      ),
-    ],
+    color: AppColors.surface,
+    borderRadius: AppRadius.extraLargeRadius,
+    boxShadow: AppShadows.large,
   );
 
   static BoxDecoration discountCardDecoration = BoxDecoration(
-    gradient: const LinearGradient(
-      colors: [Color(0xFFFF5A1F), Color(0xFFFF7A1F)],
+    gradient: LinearGradient(
+      colors: [AppColors.primary, AppColors.secondary],
     ),
-    borderRadius: BorderRadius.circular(28),
+    borderRadius: AppRadius.extraLargeRadius,
   );
 
   static BoxDecoration techChipDecoration = BoxDecoration(
-    color: Colors.white.withOpacity(0.06),
-    borderRadius: BorderRadius.circular(50),
+    color: AppColors.surface.withOpacity(0.1),
+    borderRadius: AppRadius.circularRadius,
   );
 
   static BoxDecoration locationCardDecoration = BoxDecoration(
     color: locationCardBackground,
-    borderRadius: BorderRadius.circular(28),
+    borderRadius: AppRadius.extraLargeRadius,
   );
   
   // =========================
@@ -308,14 +265,14 @@ class LandingStyles {
   
   static ButtonStyle heroButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: primaryColor,
-    foregroundColor: Colors.white,
+    foregroundColor: AppColors.textInverse,
     elevation: 0,
     padding: const EdgeInsets.symmetric(
       horizontal: 34,
       vertical: 22,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: AppRadius.largeRadius,
     ),
   );
 }

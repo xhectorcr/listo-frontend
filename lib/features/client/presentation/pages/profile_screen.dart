@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../core/local_storage/storage_service.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../theme/app_spacing.dart';
+import '../../../../widgets/app_button.dart';
+import '../../../../widgets/app_card.dart';
+import '../../../../widgets/app_container.dart';
 import '../../../landing/presentation/pages/landing_page.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -48,11 +54,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Colors.grey.shade100, // Fondo gris claro para resaltar las tarjetas
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: AppContainer(
+          maxWidth: 800,
+          padding: EdgeInsets.zero,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
             // Header del Perfil envuelto en un Stack para poner la "X"
             Stack(
               children: [
@@ -60,34 +69,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.only(top: 80, bottom: 40),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFF5A1F), // Naranja LISTO!
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(40),
                       bottomRight: Radius.circular(40),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: Column(
                     children: [
                       // Avatar Dinámico (Toma la primera letra del nombre)
                       CircleAvatar(
                         radius: 50,
-                        backgroundColor: Colors.white,
+                        backgroundColor: AppColors.surface,
                         child: Text(
                           _userName.isNotEmpty
                               ? _userName[0].toUpperCase()
                               : 'L',
-                          style: const TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFFF5A1F),
+                          style: AppTextStyles.displayMedium.copyWith(
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -95,10 +95,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Nombre de usuario
                       Text(
                         _userName,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                        style: AppTextStyles.headlineSmall.copyWith(
+                          color: AppColors.textInverse,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -109,17 +107,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(
-                            0xFF00C8D6,
-                          ), // Cyan para el badge del rol
+                          color: AppColors.accent,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           _userRole.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                          style: AppTextStyles.labelMedium.copyWith(
+                            color: AppColors.textInverse,
                             letterSpacing: 1.2,
                           ),
                         ),
@@ -127,14 +121,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-                // El botón "X" posicionado arriba a la izquierda
                 Positioned(
-                  top: 40, // Margen para la barra de estado del celular
+                  top: 40,
                   left: 10,
                   child: IconButton(
                     icon: const Icon(
                       Icons.close,
-                      color: Colors.white,
+                      color: AppColors.textInverse,
                       size: 30,
                     ),
                     onPressed: () => Navigator.pop(context),
@@ -143,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg),
 
             // Opciones del perfil (Tarjetas)
             Padding(
@@ -162,40 +155,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     subtitle: 'Preguntas frecuentes y ayuda',
                     onTap: () {},
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.md),
 
                   // Botón de Cerrar Sesión
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.redAccent),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: _logout,
-                      icon: const Icon(Icons.logout, color: Colors.redAccent),
-                      label: const Text(
-                        'Cerrar Sesión',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.redAccent,
-                        ),
-                      ),
-                    ),
+                  AppButton(
+                    text: 'Cerrar Sesión',
+                    icon: Icons.logout,
+                    type: AppButtonType.outline,
+                    onPressed: _logout,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: AppSpacing.xxl),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 
   // Widget reutilizable para las opciones del menú
   Widget _buildProfileOption({
@@ -204,39 +183,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      padding: EdgeInsets.zero,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFFFF5A1F).withOpacity(0.1),
+            color: AppColors.primary.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, color: const Color(0xFFFF5A1F)),
+          child: Icon(icon, color: AppColors.primary),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(title, style: AppTextStyles.titleMedium),
         subtitle: Text(
           subtitle,
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+          style: AppTextStyles.bodyMedium,
         ),
         trailing: const Icon(
           Icons.arrow_forward_ios,
           size: 16,
-          color: Colors.grey,
+          color: AppColors.textDisabled,
         ),
         onTap: onTap,
       ),

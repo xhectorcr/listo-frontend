@@ -4,6 +4,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../theme/app_spacing.dart';
+import '../../../../widgets/app_appbar.dart';
+import '../../../../widgets/app_button.dart';
+import '../../../../widgets/app_dialog.dart';
 
 class CameraScannerScreen extends StatefulWidget {
   final int usuarioId;
@@ -53,29 +59,16 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
     _webPermissionDialogShown = true;
     if (!mounted) return;
 
-    await showDialog<void>(
+    await AppDialog.show<void>(
       context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Permiso de cámara'),
-        content: const Text('La aplicación necesita acceder a la cámara. ¿Deseas permitirlo?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              setState(() => _status = 'Permiso de cámara denegado por usuario');
-            },
-            child: const Text('Denegar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              _requestWebPermissionAndInit();
-            },
-            child: const Text('Permitir'),
-          ),
-        ],
-      ),
+      title: 'Permiso de cámara',
+      content: 'La aplicación necesita acceder a la cámara. ¿Deseas permitirlo?',
+      confirmText: 'Permitir',
+      cancelText: 'Denegar',
+      onConfirm: _requestWebPermissionAndInit,
+      onCancel: () {
+        setState(() => _status = 'Permiso de cámara denegado por usuario');
+      },
     );
   }
 
@@ -136,7 +129,8 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Escáner de Productos YOLO')),
+      backgroundColor: AppColors.background,
+      appBar: const AppAppBar(title: 'Escáner de Productos YOLO'),
       body: Stack(
         children: [
           // Mostrar stream remoto (frame procesado desde Python)
@@ -153,17 +147,18 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.videocam_off, size: 64, color: Colors.grey),
-                              const SizedBox(height: 8),
-                              ElevatedButton(
+                              const Icon(Icons.videocam_off, size: 64, color: AppColors.textDisabled),
+                              const SizedBox(height: AppSpacing.sm),
+                              AppButton(
                                 onPressed: _requestWebPermissionAndInit,
-                                child: const Text('Permitir cámara'),
+                                text: 'Permitir cámara',
+                                isFullWidth: false,
                               ),
-                              const SizedBox(height: 8),
-                              Text(_status),
+                              const SizedBox(height: AppSpacing.sm),
+                              Text(_status, style: AppTextStyles.bodyMedium),
                             ],
                           )
-                        : const CircularProgressIndicator(),
+                        : const CircularProgressIndicator(color: AppColors.primary),
                   ),
           ),
             
@@ -171,13 +166,13 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
             bottom: 30,
             left: 0,
             right: 0,
-            child: Text(
-              _status == 'Cámara inicializada' ? "Escaneando productos..." : _status,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                backgroundColor: Colors.black54,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+              color: Colors.black54,
+              child: Text(
+                _status == 'Cámara inicializada' ? "Escaneando productos..." : _status,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textInverse),
               ),
             ),
           ),
@@ -197,25 +192,25 @@ class _CameraScannerScreenState extends State<CameraScannerScreen> with WidgetsB
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Logs', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
+                  Text('Logs', style: AppTextStyles.titleSmall.copyWith(color: AppColors.textInverse)),
+                  const SizedBox(height: AppSpacing.xs),
                   SizedBox(
                     height: 120,
                     child: SingleChildScrollView(
                       reverse: true,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _logs.take(10).map((l) => Text(l, style: const TextStyle(color: Colors.white, fontSize: 11))).toList(),
+                        children: _logs.take(10).map((l) => Text(l, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textInverse, fontSize: 11))).toList(),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Text('Productos', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('Productos', style: AppTextStyles.titleSmall.copyWith(color: AppColors.textInverse)),
+                  const SizedBox(height: AppSpacing.xs),
                   if (_detectedProducts.isEmpty)
-                    const Text('Ninguno', style: TextStyle(color: Colors.white))
+                    Text('Ninguno', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textInverse))
                   else
-                    ..._detectedProducts.take(5).map((p) => Text('- $p', style: const TextStyle(color: Colors.white))),
+                    ..._detectedProducts.take(5).map((p) => Text('- $p', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textInverse))),
                 ],
               ),
             ),

@@ -4,6 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/datasources/historial_remote_data_source.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../theme/app_spacing.dart';
+import '../../../../widgets/app_appbar.dart';
+import '../../../../widgets/app_button.dart';
+import '../../../../widgets/app_container.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -47,23 +53,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Historial',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+      backgroundColor: AppColors.background,
+      appBar: const AppAppBar(
+        title: 'Historial',
         centerTitle: true,
       ),
-      body: _buildBody(),
+      body: AppContainer(
+        maxWidth: 1000,
+        child: _buildBody(),
+      ),
     );
   }
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: Color(0xFFFF6B00)));
+      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
     }
 
     if (_error != null) {
@@ -72,11 +76,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 48),
-            const SizedBox(height: 16),
-            Text(_error!, style: const TextStyle(color: Colors.red)),
-            const SizedBox(height: 16),
-            ElevatedButton(
+            const Icon(Icons.error_outline, color: AppColors.error, size: 48),
+            const SizedBox(height: AppSpacing.md),
+            Text(_error!, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error)),
+            const SizedBox(height: AppSpacing.md),
+            AppButton(
               onPressed: () {
                 setState(() {
                   _isLoading = true;
@@ -84,8 +88,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 });
                 _loadHistorial();
               },
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF6B00)),
-              child: const Text('Reintentar', style: TextStyle(color: Colors.white)),
+              text: 'Reintentar',
+              type: AppButtonType.primary,
+              isFullWidth: false,
             )
           ],
         ),
@@ -93,14 +98,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
 
     if (_historial.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.history_toggle_off, color: Colors.grey, size: 64),
-            SizedBox(height: 16),
-            Text('No tienes compras recientes', style: TextStyle(color: Colors.grey, fontSize: 18)),
+            const Icon(Icons.history_toggle_off, color: AppColors.textDisabled, size: 64),
+            const SizedBox(height: AppSpacing.md),
+            Text('No tienes compras recientes', style: AppTextStyles.titleMedium.copyWith(color: AppColors.textDisabled)),
           ],
         ),
       );
@@ -108,7 +113,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return RefreshIndicator(
       onRefresh: _loadHistorial,
-      color: const Color(0xFFFF6B00),
+      color: AppColors.primary,
       child: ListView.separated(
         padding: const EdgeInsets.all(20),
         itemCount: _historial.length,
@@ -160,18 +165,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
               children: [
                 Text(
                   date,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: AppTextStyles.titleMedium,
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   details,
-                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),
             Text(
               total,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFFFF6B00)),
+              style: AppTextStyles.titleMedium.copyWith(color: AppColors.primary),
             ),
           ],
         ),
@@ -195,10 +200,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Center(
                 child: Container(width: 40, height: 5, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10))),
               ),
-              const SizedBox(height: 20),
-              const Text('Detalles de Compra', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Text(date, style: const TextStyle(color: Colors.grey)),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.md),
+              Text('Detalles de Compra', style: AppTextStyles.titleLarge),
+              Text(date, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+              const SizedBox(height: AppSpacing.md),
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -207,10 +212,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     final prod = productos[index];
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const CircleAvatar(backgroundColor: Color(0xFFFFF3E0), child: Icon(Icons.shopping_bag, color: Color(0xFFFF6B00))),
-                      title: Text(prod['nombre'] ?? 'Producto'),
-                      subtitle: Text('Cantidad: ${prod['cantidad']}'),
-                      trailing: Text('S/ ${(prod['subtotal'] ?? 0).toDouble().toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      leading: CircleAvatar(backgroundColor: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.shopping_bag, color: AppColors.primary)),
+                      title: Text(prod['nombre'] ?? 'Producto', style: AppTextStyles.bodyLarge),
+                      subtitle: Text('Cantidad: ${prod['cantidad']}', style: AppTextStyles.bodyMedium),
+                      trailing: Text('S/ ${(prod['subtotal'] ?? 0).toDouble().toStringAsFixed(2)}', style: AppTextStyles.titleMedium),
                     );
                   },
                 ),
@@ -219,11 +224,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Total Pagado:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  Text(total, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFF6B00))),
+                  Text('Total Pagado:', style: AppTextStyles.titleMedium),
+                  Text(total, style: AppTextStyles.titleLarge.copyWith(color: AppColors.primary)),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.sm),
             ],
           ),
         );

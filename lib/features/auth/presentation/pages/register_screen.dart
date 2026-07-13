@@ -8,8 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:listo_app/core/env/environment.dart';
 
 import '../../../../core/local_storage/storage_service.dart';
-import '../../../../shared/widgets/custom_text_field.dart';
-import '../../../../shared/widgets/primary_button.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../widgets/app_button.dart';
+import '../../../../widgets/app_textfield.dart';
+import '../../../../widgets/app_card.dart';
+import '../../../../widgets/app_container.dart';
 import '../providers/auth_provider.dart';
 import '../../../../core/states/view_state.dart';
 
@@ -29,11 +33,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _obscurePassword = true;
   bool _isSearchingDni = false;
-
-  final Color primaryColor = const Color(0xFFFF5A1F);
-
-
-
   Future<void> _buscarDni(String dni) async {
     if (dni.length != 8) {
       _showSnackBar('El DNI debe tener 8 dígitos', Colors.orange);
@@ -167,237 +166,191 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final isLoading = context.watch<AuthProvider>().state == ViewState.loading;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - 48,
+                  minHeight: constraints.maxHeight,
                 ),
                 child: Center(
-                  child: Container(
-                    width: double.infinity,
+                  child: AppContainer(
+                    maxWidth: 500,
+                    backgroundColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: AppCard(
+                      margin: EdgeInsets.symmetric(horizontal: mobile ? 0 : 20),
+                      padding: EdgeInsets.all(mobile ? 28 : 36),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // BACK
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: IconButton(
+                              onPressed: () {
+                                context.pop();
+                              },
+                              icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                            ),
+                          ),
 
-                    constraints: const BoxConstraints(maxWidth: 430),
-
-                    padding: EdgeInsets.all(mobile ? 28 : 36),
-
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(28),
-
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 30,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-
-              children: [
-                // BACK
-                Align(
-                  alignment: Alignment.centerLeft,
-
-                  child: IconButton(
-                    onPressed: () {
-                      context.pop();
-                    },
-
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                  ),
-                ),
-
-                // LOGO
-                Container(
-                  width: 75,
-                  height: 75,
-
-                  decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(22),
-                  ),
-
-                  child: const Center(
-                    child: Text(
-                      'L!',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 26),
-
-                // TITLE
-                const Text(
-                  'Crear cuenta',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF111111),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                Text(
-                  'Completa tus datos',
-                  style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
-                ),
-
-                const SizedBox(height: 34),
-
-                // NAME
-                CustomTextField(
-                  controller: _nombreController,
-                  hintText: 'Nombre completo',
-                  prefixIcon: Icons.person_outline_rounded,
-                ),
-
-                const SizedBox(height: 18),
-
-                // DNI
-                TextField(
-                  controller: _dniController,
-                  keyboardType: TextInputType.number,
-                  maxLength: 8,
-                  textInputAction: TextInputAction.next,
-                  onChanged: (value) {
-                    if (value.trim().length == 8) {
-                      _buscarDni(value.trim());
-                    }
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'DNI',
-                    counterText: '', // Ocultar contador por estética
-                    prefixIcon: const Icon(Icons.badge_outlined),
-                    suffixIcon: _isSearchingDni
-                        ? const Padding(
-                            padding: EdgeInsets.all(14.0),
-                            child: SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Color(0xFFFF5A1F),
+                          // LOGO
+                          Container(
+                            width: 75,
+                            height: 75,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'L!',
+                                style: AppTextStyles.headlineLarge.copyWith(
+                                  color: AppColors.textInverse,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
                             ),
-                          )
-                        : IconButton(
-                            icon: const Icon(Icons.search_rounded, color: Color(0xFFFF5A1F)),
-                            onPressed: () {
-                              _buscarDni(_dniController.text.trim());
-                            },
                           ),
-                    filled: true,
-                    fillColor: const Color(0xFFF7F7F7),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-                      borderSide: const BorderSide(color: Color(0xFFFF5A1F), width: 2),
-                    ),
-                  ),
-                ),
 
-                const SizedBox(height: 18),
+                          const SizedBox(height: 26),
 
-                // EMAIL
-                CustomTextField(
-                  controller: _correoController,
-                  hintText: 'Correo electrónico',
-                  prefixIcon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                ),
+                          // TITLE
+                          Text(
+                            'Crear cuenta',
+                            style: AppTextStyles.headlineMedium.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
 
-                const SizedBox(height: 18),
+                          const SizedBox(height: 10),
 
-                // PHONE
-                CustomTextField(
-                  controller: _telefonoController,
-                  hintText: 'Teléfono',
-                  prefixIcon: Icons.phone_outlined,
-                  keyboardType: TextInputType.phone,
-                ),
+                          Text(
+                            'Completa tus datos',
+                            style: AppTextStyles.bodyLarge,
+                          ),
 
-                const SizedBox(height: 18),
+                          const SizedBox(height: 34),
 
-                // PASSWORD
-                CustomTextField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  hintText: 'Contraseña',
-                  prefixIcon: Icons.lock_outline_rounded,
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off_rounded
-                          : Icons.visibility_rounded,
-                    ),
-                  ),
-                ),
+                          AppTextField(
+                            controller: _nombreController,
+                            label: 'Nombre completo',
+                            prefixIcon: const Icon(Icons.person_outline_rounded),
+                          ),
 
-                const SizedBox(height: 30),
+                          const SizedBox(height: 18),
 
-                // BUTTON
-                PrimaryButton(
-                  onPressed: _registrar,
-                  text: 'Crear cuenta',
-                  isLoading: isLoading,
-                ),
+                          AppTextField(
+                            controller: _dniController,
+                            label: 'DNI',
+                            keyboardType: TextInputType.number,
+                            maxLength: 8,
+                            textInputAction: TextInputAction.next,
+                            prefixIcon: const Icon(Icons.badge_outlined),
+                            onChanged: (value) {
+                              if (value.trim().length == 8) {
+                                _buscarDni(value.trim());
+                              }
+                            },
+                            suffixIcon: _isSearchingDni
+                                ? const Padding(
+                                    padding: EdgeInsets.all(14.0),
+                                    child: SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  )
+                                : IconButton(
+                                    icon: Icon(Icons.search_rounded,
+                                        color: AppColors.primary),
+                                    onPressed: () {
+                                      _buscarDni(_dniController.text.trim());
+                                    },
+                                  ),
+                          ),
 
-                const SizedBox(height: 24),
+                          const SizedBox(height: 18),
 
-                // LOGIN
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                          AppTextField(
+                            controller: _correoController,
+                            label: 'Correo electrónico',
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            keyboardType: TextInputType.emailAddress,
+                          ),
 
-                  children: [
-                    Text(
-                      '¿Ya tienes cuenta?',
-                      style: TextStyle(color: Colors.grey.shade700),
-                    ),
+                          const SizedBox(height: 18),
 
-                    TextButton(
-                      onPressed: () {
-                        context.pop();
-                      },
+                          AppTextField(
+                            controller: _telefonoController,
+                            label: 'Teléfono',
+                            prefixIcon: const Icon(Icons.phone_outlined),
+                            keyboardType: TextInputType.phone,
+                          ),
 
-                      child: Text(
-                        'Iniciar sesión',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.w700,
-                        ),
+                          const SizedBox(height: 18),
+
+                          AppTextField(
+                            controller: _passwordController,
+                            obscureText: _obscurePassword,
+                            label: 'Contraseña',
+                            prefixIcon: const Icon(Icons.lock_outline_rounded),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          AppButton(
+                            onPressed: _registrar,
+                            text: 'Crear cuenta',
+                            isLoading: isLoading,
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // LOGIN
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '¿Ya tienes cuenta?',
+                                style: AppTextStyles.bodyMedium,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  context.pop();
+                                },
+                                child: Text(
+                                  'Iniciar sesión',
+                                  style: AppTextStyles.labelLarge.copyWith(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
                   ),
                 ),
+              ),
             );
           },
         ),

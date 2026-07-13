@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/env/environment.dart';
+import '../../../../theme/app_colors.dart';
+import '../../../../theme/app_text_styles.dart';
+import '../../../../theme/app_spacing.dart';
+import '../../../../widgets/app_appbar.dart';
 
 class AdminScannerView extends StatefulWidget {
   const AdminScannerView({Key? key}) : super(key: key);
@@ -65,13 +69,13 @@ class _AdminScannerViewState extends State<AdminScannerView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Escáner de Administrador'),
+      backgroundColor: AppColors.background,
+      appBar: AppAppBar(
+        title: 'Escáner de Administrador',
         actions: [
           IconButton(
-            icon: const Icon(Icons.cameraswitch),
-            onPressed: () => cameraController
-                .switchCamera(), // Útil si la laptop tiene 2 cámaras
+            icon: const Icon(Icons.cameraswitch, color: AppColors.textPrimary),
+            onPressed: () => cameraController.switchCamera(),
           ),
         ],
       ),
@@ -94,12 +98,12 @@ class _AdminScannerViewState extends State<AdminScannerView> {
               width: 300,
               height: 300,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueAccent, width: 4),
+                border: Border.all(color: AppColors.primary, width: 4),
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
-          if (isProcessing) const Center(child: CircularProgressIndicator()),
+          if (isProcessing) const Center(child: CircularProgressIndicator(color: AppColors.primary)),
         ],
       ),
     );

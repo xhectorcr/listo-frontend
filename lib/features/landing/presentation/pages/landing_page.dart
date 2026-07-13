@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../widgets/app_button.dart';
 import 'landing_page_styles.dart';
 import 'landing_page_widgets.dart';
 
@@ -36,25 +37,24 @@ class LandingPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: LandingStyles.navbarLogoDecoration,
-                child: const Text(
+                child: Text(
                   "L!",
                   style: LandingStyles.logoTextStyle,
                 ),
               ),
               const SizedBox(width: 14),
-              const Text(
+              Text(
                 "LISTO! GO",
                 style: LandingStyles.brandTextStyle,
               ),
               const Spacer(),
-              TextButton(
+              AppButton(
+                text: "Iniciar sesión",
+                type: AppButtonType.text,
+                isFullWidth: false,
                 onPressed: () {
                   context.go('/login');
                 },
-                child: const Text(
-                  "Iniciar sesión",
-                  style: LandingStyles.loginButtonTextStyle,
-                ),
               ),
             ],
           ),
@@ -134,7 +134,7 @@ class LandingPage extends StatelessWidget {
                         vertical: 10,
                       ),
                       decoration: LandingStyles.heroBadgeDecoration,
-                      child: const Text(
+                      child: Text(
                         "SMART SHOPPING EXPERIENCE",
                         style: LandingStyles.heroBadgeTextStyle,
                       ),
@@ -169,15 +169,12 @@ class LandingPage extends StatelessWidget {
                     SizedBox(height: mobile ? 28 : 38),
 
                     // BOTON
-                    ElevatedButton(
-                      style: LandingStyles.heroButtonStyle,
+                    AppButton(
+                      text: "Iniciar sesión",
+                      isFullWidth: mobile,
                       onPressed: () {
                         context.go('/login');
                       },
-                      child: const Text(
-                        "Iniciar sesión",
-                        style: LandingStyles.heroButtonTextStyle,
-                      ),
                     ),
 
                     SizedBox(height: mobile ? 30 : 45),
@@ -436,7 +433,7 @@ class LandingPage extends StatelessWidget {
       color: LandingStyles.darkBackground,
       child: Column(
         children: [
-          const Text(
+          Text(
             "LISTO! GO",
             style: LandingStyles.footerLogoStyle,
           ),
