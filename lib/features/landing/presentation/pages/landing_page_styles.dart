@@ -191,10 +191,10 @@ class LandingStyles {
   );
 
   static const BoxDecoration heroBackgroundDecoration = BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [AppColors.surface, AppColors.background],
+    gradient: RadialGradient(
+      center: Alignment.topRight,
+      radius: 1.5,
+      colors: [AppColors.background, AppColors.surface],
     ),
   );
 
@@ -231,22 +231,33 @@ class LandingStyles {
   );
 
   static BoxDecoration stepCardDecoration = BoxDecoration(
-    color: stepCardBackground,
+    color: AppColors.surface,
     borderRadius: AppRadius.extraLargeRadius,
-    boxShadow: AppShadows.small,
+    boxShadow: AppShadows.medium,
+    border: Border.all(color: AppColors.border.withOpacity(0.5)),
   );
 
   static BoxDecoration productCardDecoration = BoxDecoration(
     color: AppColors.surface,
     borderRadius: AppRadius.extraLargeRadius,
-    boxShadow: AppShadows.large,
+    boxShadow: AppShadows.medium,
+    border: Border.all(color: AppColors.border.withOpacity(0.5)),
   );
 
   static BoxDecoration discountCardDecoration = BoxDecoration(
     gradient: LinearGradient(
-      colors: [AppColors.primary, AppColors.secondary],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [AppColors.primary, AppColors.primaryDark],
     ),
     borderRadius: AppRadius.extraLargeRadius,
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.primary.withOpacity(0.3),
+        blurRadius: 20,
+        offset: const Offset(0, 10),
+      )
+    ],
   );
 
   static BoxDecoration techChipDecoration = BoxDecoration(

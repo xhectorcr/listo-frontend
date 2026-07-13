@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../../../theme/app_colors.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../widgets/app_button.dart';
 import 'landing_page_styles.dart';
@@ -20,7 +21,7 @@ class LandingPage extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 85,
         elevation: 0,
-        backgroundColor: Colors.white.withOpacity(0.75),
+        backgroundColor: AppColors.glassSurface,
         surfaceTintColor: Colors.transparent,
         flexibleSpace: ClipRRect(
           child: BackdropFilter(

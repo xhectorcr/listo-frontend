@@ -9,24 +9,26 @@ class AppTextStyles {
   // Display
   static const TextStyle displayLarge = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 57,
-    fontWeight: FontWeight.w700,
+    fontSize: 64,
+    fontWeight: FontWeight.w900,
     color: AppColors.textPrimary,
-    letterSpacing: -0.25,
+    letterSpacing: -1.5,
   );
   
   static const TextStyle displayMedium = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 45,
-    fontWeight: FontWeight.w700,
+    fontSize: 48,
+    fontWeight: FontWeight.w800,
     color: AppColors.textPrimary,
+    letterSpacing: -1.0,
   );
 
   static const TextStyle displaySmall = TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 36,
-    fontWeight: FontWeight.w600,
+    fontSize: 40,
+    fontWeight: FontWeight.w800,
     color: AppColors.textPrimary,
+    letterSpacing: -0.5,
   );
 
   // Headline

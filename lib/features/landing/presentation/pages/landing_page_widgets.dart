@@ -3,6 +3,33 @@ import 'package:flutter/gestures.dart';
 import 'dart:html' as html;
 import 'landing_page_styles.dart';
 
+class HoverScaleWrapper extends StatefulWidget {
+  final Widget child;
+  const HoverScaleWrapper({super.key, required this.child});
+
+  @override
+  State<HoverScaleWrapper> createState() => _HoverScaleWrapperState();
+}
+
+class _HoverScaleWrapperState extends State<HoverScaleWrapper> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        transform: Matrix4.identity()..translate(0.0, isHovered ? -8.0 : 0.0),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
 class SectionWrapper extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -56,20 +83,22 @@ class BenefitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 240,
-      padding: const EdgeInsets.all(28),
-      decoration: LandingStyles.benefitCardDecoration,
-      child: Column(
-        children: [
-          Icon(icon, size: 45, color: LandingStyles.primaryColor),
-          const SizedBox(height: 20),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: LandingStyles.benefitCardTitleStyle,
-          ),
-        ],
+    return HoverScaleWrapper(
+      child: Container(
+        width: 240,
+        padding: const EdgeInsets.all(28),
+        decoration: LandingStyles.benefitCardDecoration,
+        child: Column(
+          children: [
+            Icon(icon, size: 45, color: LandingStyles.primaryColor),
+            const SizedBox(height: 20),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: LandingStyles.benefitCardTitleStyle,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -91,50 +120,52 @@ class StepCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 240,
-      padding: const EdgeInsets.all(28),
-      decoration: LandingStyles.stepCardDecoration,
-      child: Column(
-        children: [
-          Text(
-            step,
-            style: LandingStyles.stepCardStepStyle,
-          ),
-          const SizedBox(height: 20),
-          Icon(icon, color: Colors.white, size: 42),
-          const SizedBox(height: 20),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: LandingStyles.stepCardTitleStyle,
-          ),
-          const SizedBox(height: 10),
-          description == "Crea tu cuenta aquí y recarga tu tarjeta virtual"
-              ? RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: LandingStyles.stepCardRichDescStyle,
-                    children: [
-                      const TextSpan(text: "Crea tu cuenta "),
-                      TextSpan(
-                        text: "aquí",
-                        style: LandingStyles.stepCardLinkStyle,
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            html.window.location.hash = '/login';
-                          },
-                      ),
-                      const TextSpan(text: " y recarga tu tarjeta virtual"),
-                    ],
+    return HoverScaleWrapper(
+      child: Container(
+        width: 240,
+        padding: const EdgeInsets.all(28),
+        decoration: LandingStyles.stepCardDecoration,
+        child: Column(
+          children: [
+            Text(
+              step,
+              style: LandingStyles.stepCardStepStyle,
+            ),
+            const SizedBox(height: 20),
+            Icon(icon, color: Colors.white, size: 42),
+            const SizedBox(height: 20),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: LandingStyles.stepCardTitleStyle,
+            ),
+            const SizedBox(height: 10),
+            description == "Crea tu cuenta aquí y recarga tu tarjeta virtual"
+                ? RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: LandingStyles.stepCardRichDescStyle,
+                      children: [
+                        const TextSpan(text: "Crea tu cuenta "),
+                        TextSpan(
+                          text: "aquí",
+                          style: LandingStyles.stepCardLinkStyle,
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              html.window.location.hash = '/login';
+                            },
+                        ),
+                        const TextSpan(text: " y recarga tu tarjeta virtual"),
+                      ],
+                    ),
+                  )
+                : Text(
+                    description,
+                    textAlign: TextAlign.center,
+                    style: LandingStyles.stepCardDescStyle,
                   ),
-                )
-              : Text(
-                  description,
-                  textAlign: TextAlign.center,
-                  style: LandingStyles.stepCardDescStyle,
-                ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -154,31 +185,33 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 220,
-      padding: const EdgeInsets.all(18),
-      decoration: LandingStyles.productCardDecoration,
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Image.asset(
-              imagePath,
-              height: 160,
-              fit: BoxFit.cover,
+    return HoverScaleWrapper(
+      child: Container(
+        width: 220,
+        padding: const EdgeInsets.all(18),
+        decoration: LandingStyles.productCardDecoration,
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: Image.asset(
+                imagePath,
+                height: 160,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          const SizedBox(height: 18),
-          Text(
-            title,
-            style: LandingStyles.productCardTitleStyle,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            price,
-            style: LandingStyles.productCardPriceStyle,
-          ),
-        ],
+            const SizedBox(height: 18),
+            Text(
+              title,
+              style: LandingStyles.productCardTitleStyle,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              price,
+              style: LandingStyles.productCardPriceStyle,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -196,29 +229,31 @@ class DiscountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 320,
-      padding: const EdgeInsets.all(35),
-      decoration: LandingStyles.discountCardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(
-            Icons.local_fire_department,
-            color: Colors.white,
-            size: 40,
-          ),
-          const SizedBox(height: 25),
-          Text(
-            title,
-            style: LandingStyles.discountCardTitleStyle,
-          ),
-          const SizedBox(height: 15),
-          Text(
-            desc,
-            style: LandingStyles.discountCardDescStyle,
-          ),
-        ],
+    return HoverScaleWrapper(
+      child: Container(
+        width: 320,
+        padding: const EdgeInsets.all(35),
+        decoration: LandingStyles.discountCardDecoration,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.local_fire_department,
+              color: Colors.white,
+              size: 40,
+            ),
+            const SizedBox(height: 25),
+            Text(
+              title,
+              style: LandingStyles.discountCardTitleStyle,
+            ),
+            const SizedBox(height: 15),
+            Text(
+              desc,
+              style: LandingStyles.discountCardDescStyle,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -338,23 +373,25 @@ class HeroStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-      decoration: LandingStyles.heroStatDecoration,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            value,
-            style: LandingStyles.heroStatValueStyle,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: LandingStyles.heroStatLabelStyle,
-          ),
-        ],
+    return HoverScaleWrapper(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+        decoration: LandingStyles.heroStatDecoration,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: LandingStyles.heroStatValueStyle,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: LandingStyles.heroStatLabelStyle,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  // Core colors
-  static const Color primary = Color(0xFFFF6B00); // Naranja LISTO! Original
-  static const Color secondary = Color(0xFF0F172A); // Slate 900 para contraste premium
-  static const Color accent = Color(0xFFFF8A33); // Tono naranja complementario
+  // Core colors - Modernized Orange
+  static const Color primary = Color(0xFFFF512F); // Vibrant Sunset Orange
+  static const Color primaryDark = Color(0xFFDD2476); // For gradient (Sunset to pink/red)
+  static const Color secondary = Color(0xFF0F172A); // Slate 900 for premium contrast
+  static const Color accent = Color(0xFFFF8A33); // Lighter orange tone
   
   // Semantic colors
   static const Color success = Color(0xFF10B981);
@@ -18,6 +19,7 @@ class AppColors {
   static const Color background = Color(0xFFF8FAFC);
   static const Color surface = Color(0xFFFFFFFF);
   static const Color border = Color(0xFFE2E8F0);
+  static const Color glassSurface = Color(0xB3FFFFFF); // 70% opacity white for glass
   
   // Typography
   static const Color textPrimary = Color(0xFF0F172A);
